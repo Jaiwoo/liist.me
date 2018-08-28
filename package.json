@@ -1,0 +1,16 @@
+{
+  "name": "liist.me",
+  "version": "1.0.0",
+  "description": "liist.me allows users to organize a collaborative playlist of music for any function.",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "author": "Jaiwoo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "morgan": "^1.9.0"
+  }
+}
