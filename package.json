@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "start": "npm-run-all --parallel start-server start-mockapi",
-    "start-server": "node server.js",
+    "start": "npm-run-all --parallel start-mockapi start-server",
+    "start-server": "nodemon server.js",
     "generate-mock-liist-data": "node mockAPI/generateMockLiistData",
     "prestart-mockapi": "npm run generate-mock-liist-data",
     "start-mockapi": "json-server --watch mockAPI/db.json --port 3001"
@@ -14,8 +14,10 @@
   "author": "Jaiwoo",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
-    "morgan": "^1.9.0"
+    "morgan": "^1.9.0",
+    "normalize.css": "^8.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
@@ -25,6 +27,7 @@
     "json-schema-faker": "^0.5.0-rc15",
     "json-server": "^0.14.0",
     "mocha": "^5.2.0",
+    "nodemon": "^1.18.3",
     "npm-run-all": "^4.1.3"
   }
 }

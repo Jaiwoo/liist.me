@@ -3,12 +3,20 @@
 const express = require('express');
 const app = express();
 
+const createRouter = require('./routes/createRouter');
+const recentsRouter = require('./routes/recentsRouter');
+const liistRouter = require('./routes/liistRouter');
+
 app.use(express.static('public'));
 
+app.use('/create', createRouter);
+app.use('/recents', recentsRouter);
+app.use('/liist', liistRouter);
+
 if (require.main === module) {
-	app.listen(process.env.PORT || 8080, function() {
-		console.info(`App listening on ${this.address().port}`);
-	});
+  app.listen(process.env.PORT || 8080, function() {
+    console.info(`App listening on ${this.address().port}`);
+  });
 }
 
 module.exports = app;
