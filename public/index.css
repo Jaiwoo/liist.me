@@ -1,0 +1,27 @@
+/*
+ * ─── MAIN CLIENT STYLES ─────────────────────────────────────────────────────────
+ */
+
+ .container {
+  margin: 10px 0;
+  width: 90vw;
+  width: 90%;
+  margin: 20px auto;
+  text-align: center;
+  color: mintcream;
+  background-color: rgba(27, 29, 32, 0.6);
+  border-radius: 4px;
+}
+
+ .banner {
+   text-align: center
+ }
+
+ table {
+   width: 100%
+ }
+
+ #liists-table tr:hover {
+   background-color: orange;
+   cursor: pointer;
+ }

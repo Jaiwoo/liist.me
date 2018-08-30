@@ -6,7 +6,7 @@ const liistSchema = {
     "liists": {
       "type": "array",
       "minItems": 1,
-      "maxItems": 25,
+      "maxItems": 50,
       "items": {
         "type": "object",
         "properties": {
@@ -39,7 +39,7 @@ const liistSchema = {
           "songs": {
             "type": "array",
             "minItems": 5,
-            "maxItems": 50,
+            "maxItems": 15,
             "items": {
               "type": "object",
               "properties": {
@@ -75,77 +75,5 @@ const liistSchema = {
   },
   "required": ["liists"]
 };
-
-// const liistSchema = {
-//   "type": "object",
-//   "properties": {
-//     "liists": {
-//       "type": "array",
-//       "minItems": 10,
-//       "maxItems": 50,
-//       "items": {
-//         "type": "object",
-//         "properties": {
-//           "id": {
-//             "type": "number",
-//             "unique": true,
-//             "minimum": 1
-//           },
-//           "owner": {
-//             "type": "string",
-//             "faker": "name.findName"
-//           },
-//           "title": {
-//             "type": "string",
-//             "faker": "random.words"
-//           },
-//           "description": {
-//             "type": "string",
-//             "faker": "lorem.sentence"
-//           },
-//           "length": {
-//             "type": "number",
-//             "maximum": 100
-//           },
-//           "updatedDate": {
-//             "type": "string",
-//             "faker": "date.recent"
-//           },
-//           "songs": {
-//             "type": "array",
-//             "minItems": 10,
-//             "maxItems": 100,
-//             "items": {
-//               "type": "object",
-//               "properties": {
-//                 "title": {
-//                   "type": "string",
-//                   "faker": "random.words"
-//                 },
-//                 "artist": {
-//                   "type": "string",
-//                   "faker": "name.findName"
-//                 },
-//                 "addedBy": {
-//                   "type": "string",
-//                   "faker": "name.findName"
-//                 },
-//                 "addedDate": {
-//                   "type": "string",
-//                   "faker": "date.recent"
-//                 },
-//                 "stars": {
-//                   "type": "number",
-//                 }
-//               }
-//             }
-//           }
-//         },
-//         "required": ["id", "owner", "title", "description", "length", "updatedDate", "songs"]
-//       }
-//     }
-//   },
-//   "required": ["users"]
-// };
 
 module.exports = liistSchema;

@@ -1,23 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <meta name="description" content="liist.me allows users to organize a collaborative playlist of music for any function.">
     <title>liist.me</title>
 
     <!-- local styles -->
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="index.css">
 </head>
-<!-- ────────────────────────────────────────────────────────── -->
+<!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
 
 <body>
-    <header>LIIST.ME</header>
-    <p>Hello World!</p>
+
+    <!-- header -->
+    <header role="banner" class="banner">
+        <h1 id="banner-text">LIIST.ME </h1>
+    </header>
+
+    <!-- landing 'page' -->
+    <div id="landing-container" class="container">
+        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists below or create your own and be sure to invite your friends to join the fun!
+        </p>
+        <button id="get-liists-btn" class="button">Get liists</button>
+        <button id="create-btn" class="button">Create a liist</button>
+    </div>
+
+    <!-- recent liists 'page' -->
+    <div id="liists-container" class="container">
+        <h2 id="liists-container-title" class="container-title">Recent Liists</h2>
+        <table id="liists-table">
+            <thead>
+                <tr>
+                    <th>liist name</th>
+                    <th>created by</th>
+                    <th style="width: 10%">🎵's</th>
+                    <th style="width: 20%">updated</th>
+                </tr>
+            </thead>
+            <tbody id="liists-table-body"></tbody>
+        </table>
+    </div>
+
+    <!-- liist:ID 'page' -->
+    <div id="liist-container" class="container">
+        <div id="liist-container-info" class="container-info">
+            <h2 id="liist-name">Liist Name</h2>
+            <h3 id="liist-owner"></h3>
+            <div id="liist-description"></div>
+        </div>
+        <table id="liist-table">
+            <thead>
+                <tr>
+                    <th style="width: 40%">track</th>
+                    <th style="width: 25%">artist</th>
+                    <th style="width: 25%">added by</th>
+                    <th style="width: 10%">❤︎'s</th>
+                </tr>
+            </thead>
+            <tbody id="liist-table-body"></tbody>
+        </table>
+    </div>
+
+    <!-- footer -->
+    <footer role="contentinfo">
+
+    </footer>
+
+
+<!-- ──────────────────────────────────────────────────────────────────────────────── -->
 
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <!-- main client JS -->
+    <script src="db.js"></script>
+    <script src="index.js"></script>
+
+<!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
 </body>
 </html>
