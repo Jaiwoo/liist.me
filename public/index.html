@@ -23,12 +23,16 @@
         <h1 id="banner-text">LIIST.ME </h1>
     </header>
 
+    <!-- navigation buttons -->
+    <nav id="nav-container">
+        <button id="get-liists-btn" class="nav-button">Get liists</button>
+        <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
+
     <!-- landing 'page' -->
     <div id="landing-container" class="container">
-        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists below or create your own and be sure to invite your friends to join the fun!
+        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists above or create your own and be sure to invite your friends to join the fun!
         </p>
-        <button id="get-liists-btn" class="button">Get liists</button>
-        <button id="create-btn" class="button">Create a liist</button>
     </div>
 
     <!-- recent liists 'page' -->
@@ -54,6 +58,8 @@
             <h3 id="liist-owner"></h3>
             <div id="liist-description"></div>
         </div>
+        <button id="add-song-btn" class="liist-button">Add Song</button>
+        <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
         <table id="liist-table">
             <thead>
                 <tr>
@@ -66,6 +72,47 @@
             <tbody id="liist-table-body"></tbody>
         </table>
     </div>
+
+    <!-- create liist page/form -->
+    <div id="create-liist-container" class="container">
+        <form role="form" action="#">
+            <legend>Create a new liist & give it a fun description to share with others.</legend>
+            <label for="create-owner-name">Your Name:</label>
+            <br>
+            <input id="create-owner-name" type="text">
+            <br>
+            <label for="create-liist-name">Liist Name:</label>
+            <br>
+            <input id="create-liist-name" type="text">
+            <br>
+            <label for="create-liist-description">Liist Description:</label>
+            <br>
+            <textarea id="create-liist-description" type="text"></textarea>
+            <br>
+            <input id="create-liist-submit" class="form-submit" value="Create Liist" type="submit">
+        </form>
+    </div>
+
+    <!-- add song page/form -->
+    <div id="add-song-container" class="container">
+        <form role="form" action="#">
+            <legend>Add a song to <span id="add-song-liistName"></span>.</legend>
+            <label for="add-song-addedBy">Your Name:</label>
+            <br>
+            <input id="add-song-addedBy" type="text">
+            <br>
+            <label for="add-song-name">Song Name:</label>
+            <br>
+            <input id="add-song-name" type="text">
+            <br>
+            <label for="add-song-artist">Artist:</label>
+            <br>
+            <input id="add-song-artist" type="text">
+            <br>
+            <input id="add-song-submit" class="form-submit" type="submit" value="Add Song">
+        </form>
+    </div>
+
 
     <!-- footer -->
     <footer role="contentinfo">

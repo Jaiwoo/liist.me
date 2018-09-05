@@ -1,28 +1,52 @@
 //
-// ─── CLIENT JS ──────────────────────────────────────────────────────────────────
+// ─── JQUERY SELECTORS─────────────────────────────────────────────────────────────
 //
 
-// jQuery selectors
-
-const getLiistsBtn = $('#get-liists-btn');
+//TABLE ELEMENTS
 const liistsTableBody = $('#liists-table-body');
 const liistTableBody = $('#liist-table-body');
 const liistName = $('#liist-name');
 const liistDescription = $('#liist-description');
 const liistOwner = $('#liist-owner');
 
+// BUTTONS
+const getLiistsBtn = $('#get-liists-btn');
+const homeButton = $('#banner-text');
+const addSongButton = $('#add-song-btn');
+const createLiistButton = $('#create-btn');
+
+// PAGES
+const landingPage = $('#landing-container');
+const liistsPage = $('#liists-container');
+const liistPage = $('#liist-container');
+const createLiistPage = $('#create-liist-container');
+const addSongPage = $('#add-song-container');
+
 //
-// ─── RECENT LIISTS CONTROLS ─────────────────────────────────────────────────────
+// ─── API CALLS ──────────────────────────────────────────────────────────────────
 //
 
 function getRecentLiists (callback) {
   setTimeout(function(){ callback(mockDatabase);}, 100);
 }
 
+
+function getLiistByID (ID, callback) {
+  const liist = mockDatabase.liists.find(function(element) {
+    return element.id == ID;
+  });
+  callback(liist);
+}
+
+
+//
+// ─── RECENT LIISTS CONTROLS ─────────────────────────────────────────────────────
+//
+
 function displayLiists (data) {
   for (let index in data.liists) {
     liistsTableBody.append(
-      `<tr id="${data.liists[index].id}">
+      `<tr id="${data.liists[index].id}" class="liist-table-row">
         <td>${data.liists[index].name}</td>
         <td>${data.liists[index].owner}</td>
         <td>${data.liists[index].length}</td>
@@ -31,7 +55,10 @@ function displayLiists (data) {
     );
   }
   // add row click handlers
-  $('#liists-table tr').click(function() {
+  $('#liists-table .liist-table-row').click(function() {
+    liistsPage.hide();
+    liistsTableBody.empty();
+    liistPage.show();
     clearLiistTable();
     getAndDisplayLiist($(this).attr('id'));
   });
@@ -45,14 +72,14 @@ function getAndDisplayRecentLiists () {
 // ─── LIIST CONTROLS ─────────────────────────────────────────────────────────────
 //
 
-function getLiistByID (ID, callback) {
-  const liist = mockDatabase.liists.find(function(element) {
-    return element.id == ID;
-  });
-  callback(liist);
-}
-
 function displayLiist (liist) {
+  // add song button handler
+  addSongButton.on('click', function() {
+    $('#add-song-liistName').text(`${liist.name}`);
+    liistPage.hide();
+    addSongPage.show();
+  });
+
   liistName.text(`${liist.name}`);
   liistOwner.text(`By: ${liist.owner}`);
   liistDescription.text(`${liist.description}`);
@@ -80,12 +107,35 @@ function clearLiistTable () {
 
 
 
-
-
 //
-// ─── START APP LOGIC ────────────────────────────────────────────────────────────
+// ─── BUTTON HANDLERS─────────────────────────────────────────────────────────────
 //
 
 getLiistsBtn.on('click', function() {
+  liistsTableBody.empty();
   getAndDisplayRecentLiists();
+  createLiistButton.show();
+  landingPage.hide();
+  liistPage.hide();
+  createLiistPage.hide();
+  addSongPage.hide();
+  liistsPage.show();
+});
+
+createLiistButton.on('click', function() {
+  landingPage.hide();
+  createLiistButton.hide();
+  liistPage.hide();
+  liistsPage.hide();
+  addSongPage.hide();
+  createLiistPage.show();
+
+});
+
+homeButton.on('click', function() {
+  liistsPage.hide();
+  liistsTableBody.empty();
+  liistPage.hide();
+  clearLiistTable();
+  landingPage.show();
 });
