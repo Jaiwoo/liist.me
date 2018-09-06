@@ -1,0 +1,72 @@
+/*
+ * ─── MAIN CLIENT STYLES ─────────────────────────────────────────────────────────
+ */
+.container {
+  margin: 10px 0;
+  width: 90vw;
+  width: 90%;
+  margin: 20px auto;
+  text-align: center;
+  color: mintcream;
+  background-color: rgba(27, 29, 32, 0.6);
+  border-radius: 4px;
+}
+
+#banner-text:hover {
+  cursor: pointer;
+}
+
+#nav-container {
+  margin: 10px 0;
+  width: 90vw;
+  width: 90%;
+  margin: 20px auto;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.nav-button {
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+}
+
+.liist-button {
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+}
+
+.liist-button:hover {
+  color: black;
+  background-color: white;
+}
+
+.nav-button:hover {
+  color: black;
+  background-color: white;
+}
+
+.banner {
+  text-align: center
+}
+
+table {
+  width: 100%
+}
+
+#liists-table .liist-table-row:hover {
+  background-color: orange;
+  cursor: pointer;
+}
+
+.form-submit {
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+}
+
+.form-submit:hover {
+  color: black;
+  background-color: white;
+}

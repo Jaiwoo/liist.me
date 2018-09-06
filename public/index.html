@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
     <meta name="description" content="liist.me allows users to organize a collaborative playlist of music for any function.">
     <title>liist.me</title>
+
+    <!-- local styles -->
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="index.css">
 </head>
+<!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
+
 <body>
-    <header>LIIST.ME</header>
-    <p>Hello World!</p>
+
+    <!-- header -->
+    <header role="banner" class="banner">
+        <h1 id="banner-text">LIIST.ME </h1>
+    </header>
+
+    <!-- navigation buttons -->
+    <nav id="nav-container">
+        <button id="get-liists-btn" class="nav-button">Get liists</button>
+        <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
+
+    <!-- landing 'page' -->
+    <div id="landing-container" class="container">
+        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists above or
+            create your own and be sure to invite your friends to join the fun!
+        </p>
+    </div>
+
+    <!-- main data container for dynamic HTML -->
+    <main role="main" id="data"></main>
+
+    <!-- footer -->
+    <footer role="contentinfo">
+
+    </footer>
+
+
+    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <!-- main client JS -->
+    <script src="db.js"></script>
+    <script src="index.js"></script>
+
+    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
 </body>
+
 </html>

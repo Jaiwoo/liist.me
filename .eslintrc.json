@@ -1,10 +1,14 @@
 {
+    "globals": {
+        "mockDatabase": true
+    },
     "env": {
         "browser": true,
         "commonjs": true,
         "es6": true,
         "node": true,
-        "mocha": true
+        "mocha": true,
+        "jquery": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
@@ -15,7 +19,7 @@
         "no-console":"off",
         "indent": [
             "error",
-            "tab"
+            2
         ],
         "linebreak-style": [
             "error",
@@ -23,7 +27,9 @@
         ],
         "quotes": [
             "error",
-            "single"
+            "single", {
+                "allowTemplateLiterals": true
+            }
         ],
         "semi": [
             "error",
