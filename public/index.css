@@ -1,8 +1,7 @@
 /*
  * ─── MAIN CLIENT STYLES ─────────────────────────────────────────────────────────
  */
-
- .container {
+.container {
   margin: 10px 0;
   width: 90vw;
   width: 90%;
@@ -25,6 +24,7 @@
   text-align: center;
   border-radius: 4px;
 }
+
 .nav-button {
   color: white;
   background-color: black;
@@ -32,9 +32,9 @@
 }
 
 .liist-button {
-    color: white;
-    background-color: black;
-    border-radius: 4px;
+  color: white;
+  background-color: black;
+  border-radius: 4px;
 }
 
 .liist-button:hover {
@@ -47,34 +47,26 @@
   background-color: white;
 }
 
- .banner {
-   text-align: center
- }
+.banner {
+  text-align: center
+}
 
- table {
-   width: 100%
- }
+table {
+  width: 100%
+}
 
- #liists-table .liist-table-row:hover {
-   background-color: orange;
-   cursor: pointer;
- }
+#liists-table .liist-table-row:hover {
+  background-color: orange;
+  cursor: pointer;
+}
 
- .form-submit {
+.form-submit {
   color: white;
   background-color: black;
   border-radius: 4px;
- }
+}
 
- .form-submit:hover {
+.form-submit:hover {
   color: black;
   background-color: white;
- }
-
- /*
-  * ─── HIDDEN ─────────────────────────────────────────────────────────────────────
-  */
-
-  #liists-container, #liist-container, #create-liist-container, #add-song-container {
-    display: none;
-  }
+}

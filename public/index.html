@@ -31,88 +31,13 @@
 
     <!-- landing 'page' -->
     <div id="landing-container" class="container">
-        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists above or create your own and be sure to invite your friends to join the fun!
+        <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists above or
+            create your own and be sure to invite your friends to join the fun!
         </p>
     </div>
 
-    <!-- recent liists 'page' -->
-    <div id="liists-container" class="container">
-        <h2 id="liists-container-title" class="container-title">Recent Liists</h2>
-        <table id="liists-table">
-            <thead>
-                <tr>
-                    <th>liist name</th>
-                    <th>created by</th>
-                    <th style="width: 10%">🎵's</th>
-                    <th style="width: 20%">updated</th>
-                </tr>
-            </thead>
-            <tbody id="liists-table-body"></tbody>
-        </table>
-    </div>
-
-    <!-- liist:ID 'page' -->
-    <div id="liist-container" class="container">
-        <div id="liist-container-info" class="container-info">
-            <h2 id="liist-name">Liist Name</h2>
-            <h3 id="liist-owner"></h3>
-            <div id="liist-description"></div>
-        </div>
-        <button id="add-song-btn" class="liist-button">Add Song</button>
-        <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
-        <table id="liist-table">
-            <thead>
-                <tr>
-                    <th style="width: 40%">track</th>
-                    <th style="width: 25%">artist</th>
-                    <th style="width: 25%">added by</th>
-                    <th style="width: 10%">❤︎'s</th>
-                </tr>
-            </thead>
-            <tbody id="liist-table-body"></tbody>
-        </table>
-    </div>
-
-    <!-- create liist page/form -->
-    <div id="create-liist-container" class="container">
-        <form role="form" action="#">
-            <legend>Create a new liist & give it a fun description to share with others.</legend>
-            <label for="create-owner-name">Your Name:</label>
-            <br>
-            <input id="create-owner-name" type="text">
-            <br>
-            <label for="create-liist-name">Liist Name:</label>
-            <br>
-            <input id="create-liist-name" type="text">
-            <br>
-            <label for="create-liist-description">Liist Description:</label>
-            <br>
-            <textarea id="create-liist-description" type="text"></textarea>
-            <br>
-            <input id="create-liist-submit" class="form-submit" value="Create Liist" type="submit">
-        </form>
-    </div>
-
-    <!-- add song page/form -->
-    <div id="add-song-container" class="container">
-        <form role="form" action="#">
-            <legend>Add a song to <span id="add-song-liistName"></span>.</legend>
-            <label for="add-song-addedBy">Your Name:</label>
-            <br>
-            <input id="add-song-addedBy" type="text">
-            <br>
-            <label for="add-song-name">Song Name:</label>
-            <br>
-            <input id="add-song-name" type="text">
-            <br>
-            <label for="add-song-artist">Artist:</label>
-            <br>
-            <input id="add-song-artist" type="text">
-            <br>
-            <input id="add-song-submit" class="form-submit" type="submit" value="Add Song">
-        </form>
-    </div>
-
+    <!-- main data container for dynamic HTML -->
+    <main role="main" id="data"></main>
 
     <!-- footer -->
     <footer role="contentinfo">
@@ -120,15 +45,17 @@
     </footer>
 
 
-<!-- ──────────────────────────────────────────────────────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
 
     <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
     <!-- main client JS -->
     <script src="db.js"></script>
     <script src="index.js"></script>
 
-<!-- ──────────────────────────────────────────────────────────────────────────────── -->
+    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
 
 </body>
+
 </html>
