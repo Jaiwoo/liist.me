@@ -4,25 +4,38 @@
 // ─── APP SETUP ──────────────────────────────────────────────────────────────────
 //
 
+// EXPRESS
 const express = require('express');
+const morgan = require('morgan');
+
+// MONGOOSE
 const mongoose = require('mongoose');
-
 mongoose.Promise = global.Promise;
-
-const app = express();
-app.use(express.static('public'));
 
 // DATABASE & PORT CONFIGURATION
 const { PORT, DATABASE_URL } = require('./config');
 
-// TODO: REQUIRE MODELS & SCHEMA
+// ROUTERS
+const liistsRouter = require('./liistsRouter');
 
-// TODO: IMPLEMENT & REQUIRE ROUTER & ENDPOINTS
+// DEFINE APP
+const app = express();
+app.use(express.static('public'));
+app.use(morgan('common'));
 
 //
-// ─── CATCH-ALL ENDPOINT ─────────────────────────────────────────────────────────
+// ─── ROUTES AND ENDPOINTS ───────────────────────────────────────────────────────
 //
 
+// ROOT
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/views/index.html');
+});
+
+// ROUTE: /LIISTS
+app.use('/liists', liistsRouter);
+
+// CATCH-ALL
 app.use('*', function(req, res) {
   res.status(404).json({ message: 'Resource Not Found' });
 });
@@ -70,6 +83,7 @@ function closeServer() {
   });
 }
 
+// START SERVER
 if (require.main === module) {
   runServer(DATABASE_URL).catch(err => console.error(err));
 }
