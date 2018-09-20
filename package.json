@@ -9,7 +9,8 @@
     "start-server": "nodemon server.js",
     "generate-mock-liist-data": "node mockAPI/generateMockLiistData",
     "prestart-mockapi": "npm run generate-mock-liist-data",
-    "start-mockapi": "json-server --watch mockAPI/db.json --port 3001"
+    "start-mockapi": "json-server --watch mockAPI/db.json --port 3001",
+    "seed": "node seed"
   },
   "author": "Jaiwoo",
   "license": "ISC",

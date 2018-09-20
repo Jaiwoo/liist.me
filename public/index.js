@@ -1,4 +1,59 @@
+// GLOBAL STATE OBJECT
 const STATE = {};
+
+//
+// ─── STATE & RENDER LOGIC ───────────────────────────────────────────────────────
+//
+
+function setStateAndRender(newState) {
+  Object.assign(STATE, newState);
+  render(STATE);
+}
+
+function render(state) {
+  // render liists page
+  if (state.page === 'liists') {
+    const liistsTableHtml = generateLiistsTable(state.liists);
+    $('#data').html(liistsTableHtml);
+    // liists row click handlers
+    $('#liists-table .liists-table-row').click(function() {
+      getLiistByID($(this).attr('id')).then(setStateAndRender);
+    });
+
+    // render current liist page
+  } else if (state.page === 'currentLiist') {
+    const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
+    $('#data').html(liistTableHtml);
+    // add-song click handler
+    $('#add-song-btn').on('click', function() {
+      const addSongFormHTML = generateAddSongForm(state.currentLiist);
+      $('#data').html(addSongFormHTML);
+      handleAddSongSubmit(STATE.currentLiistID);
+    });
+    // delete liist click handler
+    $('#delete-liist-btn').on('click', function() {
+      let del = confirm(`Are you sure you want to delete liist ${STATE.currentLiist.name}?`);
+      if (del) {
+        deleteLiistByID(STATE.currentLiistID);
+      }
+    });
+    // delete song click handler
+    $('#current-liist-table .song-delete-btn').click(function() {
+      let songID = $(this).parent().attr('id');
+      let songToDelete = getSongNameToDelete(songID);
+      let del = confirm(`Are you sure you want to delete the song ${songToDelete} from the liist?`);
+      if (del) {
+        deleteSongInCurrentLiist(songID).then(setStateAndRender);
+      }
+    });
+  }
+  // render create-liist page
+  else if (state.page === 'create-liist') {
+    const createFormHTML = generateCreateForm();
+    $('#data').html(createFormHTML);
+    handleCreateLiistSubmit();
+  }
+}
 
 //
 // ─── API CALLS ──────────────────────────────────────────────────────────────────
@@ -17,8 +72,14 @@ function getLiistByID(ID) {
     return element.id == ID;
   });
 
+  const liistIndex = mockDatabase.liists.findIndex(function(element) {
+    return element.id == ID;
+  });
+
+  // set new STATE
   return Promise.resolve({
     currentLiistID: ID,
+    currentLiistIndex: liistIndex,
     currentLiist: liist,
     page: 'currentLiist'
   });
@@ -30,6 +91,7 @@ function addSongToLiist(songToAdd) {
     return element.id == STATE.currentLiistID;
   });
 
+  STATE.currentLiist.songs.push(songToAdd);
   mockDatabase.liists[liistIndex].songs.push(songToAdd);
 
   return Promise.resolve();
@@ -54,7 +116,7 @@ function createNewLiist(userInput) {
   return Promise.resolve(newLiist.id);
 }
 
-// DELETE to /liist:ID
+// DELETE current liist by ID ~ /liist/:ID
 function deleteLiistByID(ID) {
   const liistIndex = mockDatabase.liists.findIndex(function(element) {
     return element.id == ID;
@@ -66,6 +128,17 @@ function deleteLiistByID(ID) {
   });
 }
 
+// DELETE song in current liist ~ /liist/:ID
+function deleteSongInCurrentLiist(songID) {
+  const songIndex = mockDatabase.liists[STATE.currentLiistIndex].songs.findIndex(function(element) {
+    return element.id == songID;
+  });
+
+  mockDatabase.liists[STATE.currentLiistIndex].songs.splice(songIndex, 1);
+
+  return Promise.resolve();
+}
+
 //
 // ─── RECENT LIISTS LOGIC ───────────────────────────────────────────────────────
 //
@@ -74,7 +147,7 @@ function generateLiistsTable(data) {
   let liistsTableRows = [];
   for (let index in data.liists) {
     liistsTableRows.push(
-      `<tr id="${data.liists[index].id}" class="liist-table-row">
+      `<tr id="${data.liists[index].id}" class="liists-table-row">
         <td>${data.liists[index].name}</td>
         <td>${data.liists[index].owner}</td>
         <td>${data.liists[index].length}</td>
@@ -105,61 +178,18 @@ function generateLiistsTable(data) {
 }
 
 //
-// ─── STATE & RENDER LOGIC ───────────────────────────────────────────────────────
-//
-
-function setStateAndRender(newState) {
-  Object.assign(STATE, newState);
-  render(STATE);
-}
-
-function render(state) {
-  // render liists page
-  if (state.page === 'liists') {
-    const liistsTableHtml = generateLiistsTable(state.liists);
-    $('#data').html(liistsTableHtml);
-    $('#liists-table .liist-table-row').click(function() {
-      getLiistByID($(this).attr('id')).then(setStateAndRender);
-    });
-
-    // render liist page
-  } else if (state.page === 'currentLiist') {
-    const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
-    $('#data').html(liistTableHtml);
-    // add-song click handler
-    $('#add-song-btn').on('click', function() {
-      const addSongFormHTML = generateAddSongForm(state.currentLiist);
-      $('#data').html(addSongFormHTML);
-      handleAddSongSubmit(STATE.currentLiistID);
-    });
-    // delete liist click handler
-    $('#delete-liist-btn').on('click', function() {
-      let del = confirm(`Are you sure you want to delete ${STATE.currentLiist.name}?`);
-      if (del) {
-        deleteLiistByID(STATE.currentLiistID);
-      }
-    });
-  }
-  // render create-liist page
-  else if (state.page === 'create-liist') {
-    const createFormHTML = generateCreateForm();
-    $('#data').html(createFormHTML);
-    handleCreateLiistSubmit();
-  }
-}
-
-//
-// ─── LIIST LOGIC ────────────────────────────────────────────────────────────────
+// ─── CURRENT LIIST LOGIC ─────────────────────────────────────────────────────────
 //
 
 function generateCurrentLiistTable(liist) {
   let liistTableRows = [];
   for (let index in liist.songs) {
     liistTableRows.push(
-      `<tr class="liist-table-row">
-        <td>${liist.songs[index].title}</td>
-        <td>${liist.songs[index].artist}</td>
-        <td>${liist.songs[index].addedBy}</td>
+      `<tr id="${liist.songs[index].id}" class="current-liist-table-row">
+        <td class="song-title">${liist.songs[index].title}</td>
+        <td class="song-artist">${liist.songs[index].artist}</td>
+        <td class="song-addedBy">${liist.songs[index].addedBy}</td>
+        <td class="song-delete-btn">X</td>
       </tr>`
     );
   }
@@ -175,21 +205,30 @@ function generateCurrentLiistTable(liist) {
       </div>
       <button id="add-song-btn" class="liist-button">Add Song</button>
       <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
-      <table id="liist-table">
+      <table id="current-liist-table">
         <thead>
           <tr>
             <th style="width: 40%">track</th>
             <th style="width: 25%">artist</th>
             <th style="width: 25%">added by</th>
+            <th>❌</th>
           </tr>
         </thead>
-        <tbody id="liist-table-body">
+        <tbody id="current-liist-table-body">
           ${liistTableRows}
         </tbody>
       </table>
     </div>`;
 
   return liistTable;
+}
+
+function getSongNameToDelete(ID) {
+  const songIndex = STATE.currentLiist.songs.findIndex(function(element) {
+    return element.id == ID;
+  });
+
+  return STATE.currentLiist.songs[songIndex].title;
 }
 
 //

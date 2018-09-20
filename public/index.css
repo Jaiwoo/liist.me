@@ -55,9 +55,14 @@ table {
   width: 100%
 }
 
-#liists-table .liist-table-row:hover {
+#liists-table .liists-table-row:hover {
   background-color: orange;
   cursor: pointer;
+}
+
+#current-liist-table .song-delete-btn:hover {
+  color: red;
+  cursor: pointer
 }
 
 .form-submit {

@@ -43,6 +43,11 @@ const liistSchema = {
             "items": {
               "type": "object",
               "properties": {
+                "id": {
+                  "type": "string",
+                  "unique": true,
+                  "faker": "random.uuid"
+                },
                 "title": {
                   "type": "string",
                   "faker": "random.words"
@@ -65,7 +70,7 @@ const liistSchema = {
                   "maximum": 100
                 }
               },
-              "required": ["title", "artist", "addedBy", "addedDate", "stars"]
+              "required": ["id", "title", "artist", "addedBy", "addedDate", "stars"]
             }
           }
         },
