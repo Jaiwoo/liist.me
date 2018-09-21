@@ -8,9 +8,11 @@ const jsonParser = bodyParser.json();
 
 const { Liist } = require('./models');
 
-// TODO: BUILD OUT LIISTS ENDPOINT FUNCTIONS
+//
+// ─── ENDPOINTS ──────────────────────────────────────────────────────────────────
+//
 
-// GET /LIISTS
+// GET /LIISTS (GET ALL LIISTS)
 router.get('/', (req, res) => {
   Liist.find()
     .then(liists => {
@@ -24,7 +26,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// GET /LIISTS/:ID
+// GET /LIISTS/:ID (GET ALL LIISTS)
 router.get('/:id', (req, res) => {
   Liist.findById(req.params.id)
     .then(liist => {
@@ -36,7 +38,7 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// POST /LIISTS
+// POST /LIISTS (ADD NEW LIIST)
 router.post('/', jsonParser, (req, res) => {
   const requiredFields = ['owner', 'name', 'description'];
   for (let i=0; i< requiredFields.length; i++) {
@@ -61,8 +63,8 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-// PUT /LIISTS:ID
-router.put('/:id', jsonParser, (req, res) => {
+// PUT /LIISTS:ID/SONGS (ADD NEW SONG TO LIIST)
+router.put('/:id/songs', jsonParser, (req, res) => {
   const requiredFields = ['title', 'artist', 'addedBy'];
   for (let i=0; i< requiredFields.length; i++) {
     const field = requiredFields[i];
@@ -87,7 +89,31 @@ router.put('/:id', jsonParser, (req, res) => {
     });
 });
 
-// DELETE /LIISTS/:ID
+// DELETE /LIISTS/:ID/SONGS (DELETE SONG FROM LIIST BY ID)
+router.delete('/:id/songs', jsonParser, (req, res) => {
+  const requiredFields = ['songID'];
+  for (let i=0; i< requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Request body is missing ${field} field`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+
+  let songID = req.body.songID;
+
+  Liist.findByIdAndUpdate(req.params.id, { '$pull': { 'songs': { '_id': songID } } })
+    .then(liist => {
+      res.status(204).json(liist);
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ message: 'Internal Server Error.' });
+    });
+});
+
+// DELETE /LIISTS/:ID (DELETE LIIST)
 router.delete('/:id', (req, res) => {
   Liist.findByIdAndRemove(req.params.id)
     .then(() => {

@@ -141,6 +141,7 @@ describe('Liists API resource', function() {
     });
   });
 
+  // GET TO /LIISTS/:ID
   describe('GET to /liists/:ID', function() {
     it('should return liist that matches specified ID', function() {
       let res;
@@ -228,7 +229,7 @@ describe('Liists API resource', function() {
           liistId = liist.id;
           return chai
             .request(app)
-            .put(`/liists/${liistId}`)
+            .put(`/liists/${liistId}/songs`)
             .send(songObj);
         })
         // inspect response
@@ -247,12 +248,53 @@ describe('Liists API resource', function() {
     });
   });
 
+  // DELETE TO /LIISTS/:ID/SONGS
+  describe('DELETE to /liists/:id to delete song from liist', function() {
+    it('should delete specific song from liist & db by ID in body', function() {
+      // first get a liist item from db for testing
+      let liist;
+      let songID;
+      let liistLength;
+
+      return Liist
+        .findOne()
+        .then(function(_liist) {
+          liist = _liist;
+          songID = liist.songs[0].id;
+          liistLength = liist.songs.length;
+
+          const requestBody = {
+            songID: songID
+          };
+
+          return chai
+            .request(app)
+            .delete(`/liists/${liist.id}/songs`)
+            .send(requestBody);
+        })
+        // inspect response and return call to db to ensure deletion
+        .then(function(res) {
+          expect(res).to.have.status(204);
+          return Liist.findById(liist.id);
+        })
+        // check db for song deletion
+        .then(function(_liist) {
+          const songIndex = _liist.songs.findIndex(function(element) {
+            return element.id == songID;
+          });
+          expect(_liist.songs.length).to.equal(liistLength - 1);
+          expect(songIndex).to.equal(-1);
+        });
+    });
+  });
+
   // DELETE TO /LIISTS/:ID
   describe('DELETE to /liists/:id', function() {
     it('should delete liist from DB by ID', function() {
       let liist;
 
-      return Liist.findOne()
+      return Liist
+        .findOne()
         .then(function(_liist) {
           liist = _liist;
           return chai
