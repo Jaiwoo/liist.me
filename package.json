@@ -5,12 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "start": "npm-run-all --parallel start-mockapi start-server",
-    "start-server": "nodemon server.js",
-    "generate-mock-liist-data": "node mockAPI/generateMockLiistData",
-    "prestart-mockapi": "npm run generate-mock-liist-data",
-    "start-mockapi": "json-server --watch mockAPI/db.json --port 3001",
-    "seed": "node seed"
+    "start": "node server.js"
   },
   "author": "Jaiwoo",
   "license": "ISC",
