@@ -1,83 +1,191 @@
+// GLOBAL STATE OBJECT
 const STATE = {};
+
+//
+// ─── STATE & RENDER LOGIC ───────────────────────────────────────────────────────
+//
+
+function setStateAndRender(newState) {
+  Object.assign(STATE, newState);
+  render(STATE);
+}
+
+function render(state) {
+  // render liists page
+  if (state.page === 'liists') {
+    const liistsTableHtml = generateLiistsTable(state.liists);
+    $('#data').html(liistsTableHtml);
+    // liists row click handlers
+    $('#liists-table .liists-table-row').click(function() {
+      getLiistByID($(this).attr('id'), renderCurrentLiist);
+    });
+  } 
+  // render current liist page
+  else if (state.page === 'currentLiist') {
+    const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
+    $('#data').html(liistTableHtml);
+    // add-song click handler
+    $('#add-song-btn').on('click', function() {
+      const addSongFormHTML = generateAddSongForm(state.currentLiist);
+      $('#data').html(addSongFormHTML);
+      handleAddSongSubmit(STATE.currentLiistID);
+    });
+    // delete liist click handler
+    $('#delete-liist-btn').on('click', function() {
+      let del = confirm(`Are you sure you want to delete liist ${STATE.currentLiist.name}?`);
+      if (del) {
+        deleteCurrentLiist();
+        getRecentLiists(processLiistsData);
+      }
+    });
+    // delete song click handler
+    $('#current-liist-table .song-delete-btn').click(function() {
+      let songID = $(this).parent().attr('id');
+      let songToDelete = getSongNameToDelete(songID);
+      let del = confirm(`Are you sure you want to delete the song ${songToDelete} from the liist?`);
+      if (del) {
+        deleteSongInCurrentLiist(songID, renderCurrentLiist);
+      }
+    });
+  }
+  // render create-liist page
+  else if (state.page === 'create-liist') {
+    const createFormHTML = generateCreateForm();
+    $('#data').html(createFormHTML);
+    handleCreateLiistSubmit();
+  }
+  // render error page
+  else if (state.page === 'error-page') {
+    const errorMessage = generateErrorHTML();
+    $('#data').html(errorMessage);
+  }
+}
 
 //
 // ─── API CALLS ──────────────────────────────────────────────────────────────────
 //
 
-// GET /liists
+const API_URL = 'http://localhost:8080/liists';
+
+// GET /liists (GET ALL LIISTS)
 function getRecentLiists(callback) {
-  setTimeout(function() {
-    callback(mockDatabase);
-  }, 100);
-}
-
-// GET to /liists:ID
-function getLiistByID(ID) {
-  const liist = mockDatabase.liists.find(function(element) {
-    return element.id == ID;
-  });
-
-  return Promise.resolve({
-    currentLiistID: ID,
-    currentLiist: liist,
-    page: 'currentLiist'
-  });
-}
-
-// PUT to /liists:ID
-function addSongToLiist(songToAdd) {
-  const liistIndex = mockDatabase.liists.findIndex(function(element) {
-    return element.id == STATE.currentLiistID;
-  });
-
-  mockDatabase.liists[liistIndex].songs.push(songToAdd);
-
-  return Promise.resolve();
-}
-
-// POST to /create/liist
-function createNewLiist(userInput) {
-  // POST API call to /create/liist
-  let newLiist = {
-    id:
-      Math.random()
-        .toString(36)
-        .substring(2, 15) +
-      Math.random()
-        .toString(36)
-        .substring(2, 15),
-    songs: []
+  const settings = {
+    url: API_URL,
+    datatype: 'json',
+    type: 'GET',
+    success: callback
   };
-  Object.assign(newLiist, userInput);
-  mockDatabase.liists.push(newLiist);
-
-  return Promise.resolve(newLiist.id);
+  $.ajax(settings);
 }
 
-// DELETE to /liist:ID
-function deleteLiistByID(ID) {
-  const liistIndex = mockDatabase.liists.findIndex(function(element) {
-    return element.id == ID;
-  });
+// GET to /liists:ID (GET LIIST BY ID)
+function getLiistByID(ID, callback) {
+  const settings = {
+    url: API_URL + `/${ID}`,
+    datatype: 'json',
+    type: 'GET',
+    success: callback
+  };
+  
+  $.ajax(settings);
+}
 
-  mockDatabase.liists.splice(liistIndex, 1);
-  getRecentLiists(data => {
-    setStateAndRender({ liists: data, page: 'liists' });
-  });
+// PUT to /liists:ID (ADD SONG TO CURRENT LIIST)
+function addSongToLiist(songToAdd, callback) {
+  const settings = {
+    url: API_URL + `/${STATE.currentLiistID}/songs`,
+    data: JSON.stringify(songToAdd),
+    contentType: 'application/json',
+    datatype: 'json',
+    type: 'PUT',
+    success: callback
+  };
+
+  $.ajax(settings);
+}
+
+// POST to /liists (CREATE NEW LIIST)
+function createNewLiist(userInput, callback) {
+  const settings = {
+    url: API_URL,
+    data: JSON.stringify(userInput),
+    contentType: 'application/json',
+    dataType: 'json',
+    type: 'POST',
+    success: callback
+  };
+  $.ajax(settings);
+}
+
+// DELETE current liist by ID
+function deleteCurrentLiist(callback) {
+  const settings = {
+    url: API_URL + `/${STATE.currentLiistID}`,
+    datatype: 'json',
+    type: 'DELETE',
+    success: callback
+  };
+  
+  $.ajax(settings);
+}
+
+// DELETE song in current liist
+function deleteSongInCurrentLiist(songID, callback) {
+  const settings = {
+    url: API_URL + `/${STATE.currentLiistID}/songs`,
+    data: JSON.stringify({ songID: songID }),
+    contentType: 'application/json',
+    datatype: 'json',
+    type: 'DELETE',
+    success: callback
+  };
+
+  $.ajax(settings);
 }
 
 //
-// ─── RECENT LIISTS LOGIC ───────────────────────────────────────────────────────
+// ─── AJAX RESPONSE PROCESSING FUNCTIONS ─────────────────────────────────────────
+//
+
+function processLiistsData(response) {
+  let newState;
+  
+  if (response.liists.length > 0) {
+    newState = {
+      liists: response,
+      page: 'liists'
+    };
+  }
+  else {
+    newState = {
+      errorMessage: 'There are currently no Liists. Create a new Liist above to get started.',
+      page: 'error-page'
+    };
+  }
+  setStateAndRender(newState);
+}
+
+function renderCurrentLiist(liist) {
+  const newState = {
+    currentLiist: liist,
+    currentLiistID: liist.id,
+    page: 'currentLiist'
+  };
+  setStateAndRender(newState);
+}
+
+//
+// ─── RECENT LIISTS HTML ───────────────────────────────────────────────────────
 //
 
 function generateLiistsTable(data) {
   let liistsTableRows = [];
   for (let index in data.liists) {
     liistsTableRows.push(
-      `<tr id="${data.liists[index].id}" class="liist-table-row">
+      `<tr id="${data.liists[index].id}" class="liists-table-row">
         <td>${data.liists[index].name}</td>
         <td>${data.liists[index].owner}</td>
-        <td>${data.liists[index].length}</td>
+        <td>${data.liists[index].numOfSongs}</td>
       </tr>`
     );
   }
@@ -105,129 +213,106 @@ function generateLiistsTable(data) {
 }
 
 //
-// ─── STATE & RENDER LOGIC ───────────────────────────────────────────────────────
-//
-
-function setStateAndRender(newState) {
-  Object.assign(STATE, newState);
-  render(STATE);
-}
-
-function render(state) {
-  // render liists page
-  if (state.page === 'liists') {
-    const liistsTableHtml = generateLiistsTable(state.liists);
-    $('#data').html(liistsTableHtml);
-    $('#liists-table .liist-table-row').click(function() {
-      getLiistByID($(this).attr('id')).then(setStateAndRender);
-    });
-
-    // render liist page
-  } else if (state.page === 'currentLiist') {
-    const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
-    $('#data').html(liistTableHtml);
-    // add-song click handler
-    $('#add-song-btn').on('click', function() {
-      const addSongFormHTML = generateAddSongForm(state.currentLiist);
-      $('#data').html(addSongFormHTML);
-      handleAddSongSubmit(STATE.currentLiistID);
-    });
-    // delete liist click handler
-    $('#delete-liist-btn').on('click', function() {
-      let del = confirm(`Are you sure you want to delete ${STATE.currentLiist.name}?`);
-      if (del) {
-        deleteLiistByID(STATE.currentLiistID);
-      }
-    });
-  }
-  // render create-liist page
-  else if (state.page === 'create-liist') {
-    const createFormHTML = generateCreateForm();
-    $('#data').html(createFormHTML);
-    handleCreateLiistSubmit();
-  }
-}
-
-//
-// ─── LIIST LOGIC ────────────────────────────────────────────────────────────────
+// ─── CURRENT LIIST HTML ─────────────────────────────────────────────────────────
 //
 
 function generateCurrentLiistTable(liist) {
-  let liistTableRows = [];
-  for (let index in liist.songs) {
-    liistTableRows.push(
-      `<tr class="liist-table-row">
-        <td>${liist.songs[index].title}</td>
-        <td>${liist.songs[index].artist}</td>
-        <td>${liist.songs[index].addedBy}</td>
-      </tr>`
-    );
+  if(liist.songs.length > 0) {
+    let liistTableRows = [];
+    for (let index in liist.songs) {
+      liistTableRows.push(
+        `<tr id="${liist.songs[index]._id}" class="current-liist-table-row">
+          <td class="song-title">${liist.songs[index].title}</td>
+          <td class="song-artist">${liist.songs[index].artist}</td>
+          <td class="song-addedBy">${liist.songs[index].addedBy}</td>
+          <td class="song-delete-btn">X</td>
+        </tr>`
+      );
+    }
+  
+    liistTableRows = liistTableRows.join('');
+  
+    const liistTable = `
+      <div id="liist-container" class="container">
+        <div id="liist-container-info" class="container-info">
+          <h2 id="liist-name">${liist.name}</h2>
+          <h3 id="liist-owner">Created By: ${liist.owner}</h3>
+          <div id="liist-description">${liist.description}</div>
+        </div>
+        <button id="add-song-btn" class="liist-button">Add Song</button>
+        <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
+        <table id="current-liist-table">
+          <thead>
+            <tr>
+              <th style="width: 40%">track</th>
+              <th style="width: 25%">artist</th>
+              <th style="width: 25%">added by</th>
+              <th>❌</th>
+            </tr>
+          </thead>
+          <tbody id="current-liist-table-body">
+            ${liistTableRows}
+          </tbody>
+        </table>
+      </div>`;
+  
+    return liistTable;
+  }
+  else {
+    const addSongMessage = `
+      <div id="liist-container" class="container">
+        <div id="liist-container-info" class="container-info">
+          <h2 id="liist-name">${liist.name}</h2>
+          <h3 id="liist-owner">Created By: ${liist.owner}</h3>
+          <div id="liist-description">${liist.description}</div>
+        </div>
+        <button id="add-song-btn" class="liist-button">Add Song</button>
+        <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
+        <p id="add-song-message">Liist is currently empty, add a song above.</p>
+      </div>
+    `;
+    return addSongMessage;
   }
 
-  liistTableRows = liistTableRows.join('');
+}
 
-  const liistTable = `
-    <div id="liist-container" class="container">
-      <div id="liist-container-info" class="container-info">
-        <h2 id="liist-name">${liist.name}</h2>
-        <h3 id="liist-owner">Created By: ${liist.owner}</h3>
-        <div id="liist-description">${liist.description}</div>
-      </div>
-      <button id="add-song-btn" class="liist-button">Add Song</button>
-      <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
-      <table id="liist-table">
-        <thead>
-          <tr>
-            <th style="width: 40%">track</th>
-            <th style="width: 25%">artist</th>
-            <th style="width: 25%">added by</th>
-          </tr>
-        </thead>
-        <tbody id="liist-table-body">
-          ${liistTableRows}
-        </tbody>
-      </table>
-    </div>`;
+function getSongNameToDelete(ID) {
+  const songIndex = STATE.currentLiist.songs.findIndex(function(element) {
+    return element._id == ID;
+  });
 
-  return liistTable;
+  return STATE.currentLiist.songs[songIndex].title;
 }
 
 //
-// ─── ADD SONG LOGIC ─────────────────────────────────────────────────────────────
+// ─── ADD SONG HTML ─────────────────────────────────────────────────────────────
 //
 
 function generateAddSongForm(liist) {
   const addSongFormHTML = `
     <div id="add-song-container" class="container">
       <form id="add-song-form" role="form" action="#">
-        <legend>Add a song to ${liist.name}.</legend>
-        <label for="add-song-addedBy">Your Name:</label>
-        <br>
-        <input id="add-song-addedBy" type="text">
-        <br>
-        <label for="add-song-name">Song Name:</label>
-        <br>
-        <input id="add-song-name" type="text">
-        <br>
-        <label for="add-song-artist">Artist:</label>
-        <br>
-        <input id="add-song-artist" type="text">
-        <br>
-        <input id="add-song-submit" class="form-submit" type="submit" value="Add Song">
+        <fieldset>
+          <legend>Add a song to ${liist.name}.</legend>
+          <label for="add-song-addedBy">Your Name:</label>
+          <br>
+          <input id="add-song-addedBy" type="text">
+          <br>
+          <label for="add-song-name">Song Name:</label>
+          <br>
+          <input id="add-song-name" type="text">
+          <br>
+          <label for="add-song-artist">Artist:</label>
+          <br>
+          <input id="add-song-artist" type="text">
+          <br>
+          <input id="add-song-submit" class="form-submit" type="submit" value="Add Song">
+        </fieldset>
       </form>
     </div>
   `;
 
   return addSongFormHTML;
-}
-
-function addSongToState(songToAdd) {
-
-  const updatedLiist = Object.assign({}, STATE.currentLiist, {
-    songs: STATE.currentLiist.songs.concat([songToAdd])
-  });
-
-  setStateAndRender({currentLiist: updatedLiist});
 }
 
 function handleAddSongSubmit() {
@@ -238,42 +323,37 @@ function handleAddSongSubmit() {
       title: $('#add-song-name').val(),
       artist: $('#add-song-artist').val(),
       addedBy: $('#add-song-addedBy').val(),
-      addedDate: new Date(),
-      stars: 0
+      addedDate: new Date()
     };
 
-    addSongToState(songToAdd);
-
-    addSongToLiist(songToAdd).catch(() =>
-      setStateAndRender({
-        errorMessage: 'Something went wrong, try to add a song again'
-      })
-    );
+    addSongToLiist(songToAdd, renderCurrentLiist);
   });
 }
 
 //
-// ─── CREATE LIIST LOGIC ─────────────────────────────────────────────────────────
+// ─── CREATE LIIST HTML ─────────────────────────────────────────────────────────
 //
 
 function generateCreateForm() {
   const createFormHTML = `
     <div id="create-liist-container" class="container">
       <form id="create-liist-form" role="form" action="#">
-        <legend>Create a new liist & give it a fun description to share with others.</legend>
-        <label for="create-owner-name">Your Name:</label>
-        <br>
-        <input id="create-owner-name" type="text">
-        <br>
-        <label for="create-liist-name">Liist Name:</label>
-        <br>
-        <input id="create-liist-name" type="text">
-        <br>
-        <label for="create-liist-description">Liist Description:</label>
-        <br>
-        <textarea id="create-liist-description" type="text"></textarea>
-        <br>
-        <input id="create-liist-submit" class="form-submit" value="Create Liist" type="submit">
+        <fieldset>
+          <legend>Create a new liist & give it a fun description to share with others.</legend>
+          <label for="create-owner-name">Your Name:</label>
+          <br>
+          <input id="create-owner-name" type="text">
+          <br>
+          <label for="create-liist-name">Liist Name:</label>
+          <br>
+          <input id="create-liist-name" type="text">
+          <br>
+          <label for="create-liist-description">Liist Description:</label>
+          <br>
+          <textarea id="create-liist-description" type="text"></textarea>
+          <br>
+          <input id="create-liist-submit" class="form-submit" value="Create Liist" type="submit">
+        </fieldset>
       </form>
     </div>  
   `;
@@ -289,11 +369,21 @@ function handleCreateLiistSubmit() {
       name: $('#create-liist-name').val(),
       description: $('#create-liist-description').val()
     };
-
-    createNewLiist(userInput).then(function(ID) {
-      getLiistByID(ID).then(setStateAndRender);
-    });
+    createNewLiist(userInput, renderCurrentLiist);
   });
+}
+
+//
+// ─── ERROR MESSAGE HTML ─────────────────────────────────────────────────────────
+//
+
+function generateErrorHTML() {
+  const errorHTML = `
+    <div id="error-container" class="container">
+      <p id="error-text">${STATE.errorMessage}</p>
+    </div>
+  `;
+  return errorHTML;
 }
 
 //
@@ -301,11 +391,16 @@ function handleCreateLiistSubmit() {
 //
 
 $('#get-liists-btn').on('click', function() {
-  getRecentLiists(data => {
-    setStateAndRender({ liists: data, page: 'liists' });
-  });
+  $('#landing-container').hide();
+  getRecentLiists(processLiistsData);
 });
 
 $('#create-btn').on('click', function() {
+  $('#landing-container').hide();
   setStateAndRender({ page: 'create-liist' });
+});
+
+$('#banner-text').on('click', function() {
+  $('#landing-container').show();
+  $('#data').empty();
 });
