@@ -27,14 +27,6 @@ app.use(morgan('common'));
 // ─── ROUTES AND ENDPOINTS ───────────────────────────────────────────────────────
 //
 
-<<<<<<< HEAD
-// ROOT
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
-});
-
-=======
->>>>>>> feature/API_Router
 // ROUTE: /LIISTS
 app.use('/liists', liistsRouter);
 

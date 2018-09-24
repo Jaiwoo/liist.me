@@ -8,13 +8,6 @@ const jsonParser = bodyParser.json();
 
 const { Liist } = require('./models');
 
-<<<<<<< HEAD
-
-// TODO: BUILD OUT LIISTS ENDPOINT FUNCTIONS
-
-
-
-=======
 //
 // ─── ENDPOINTS ──────────────────────────────────────────────────────────────────
 //
@@ -134,14 +127,9 @@ router.delete('/:id', (req, res) => {
       res.status(500).json({ message: 'Internal Server Error.' });
     });
 });
->>>>>>> feature/API_Router
 
 //
 // ─── EXPORTS ────────────────────────────────────────────────────────────────────
 //
 
-<<<<<<< HEAD
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> feature/API_Router

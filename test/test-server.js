@@ -9,15 +9,9 @@ const chaiHTTP = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 
-<<<<<<< HEAD
-const {Liist} = require('../models');
-const {app, runServer, closeServer} = require('../server');
-const {TEST_DATABASE_URL} = require('../config');
-=======
 const { Liist } = require('../models');
 const { app, runServer, closeServer } = require('../server');
 const { TEST_DATABASE_URL } = require('../config');
->>>>>>> feature/API_Router
 
 const expect = chai.expect;
 chai.use(chaiHTTP);
@@ -26,21 +20,13 @@ chai.use(chaiHTTP);
 // ─── SEED TEST DATABASE ─────────────────────────────────────────────────────────
 //
 
-<<<<<<< HEAD
-function seedLiistData () {
-=======
 function seedLiistData() {
->>>>>>> feature/API_Router
   console.log('Seeding test Liist data');
 
   const seedData = [];
   const dataBaseLength = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
 
-<<<<<<< HEAD
-  for (let i=0; i<=dataBaseLength; i++) {
-=======
   for (let i = 0; i <= dataBaseLength; i++) {
->>>>>>> feature/API_Router
     seedData.push(generateLiistData());
   }
 
@@ -48,19 +34,6 @@ function seedLiistData() {
   return Liist.insertMany(seedData);
 }
 
-<<<<<<< HEAD
-function generateSongs () {
-  const songsArray = [];
-  const liistLength = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
-
-  for (let i=0; i<=liistLength; i++) {
-    const songObj = {
-      title: faker.lorem.words(),
-      artist: faker.name.findName(),
-      addedBy: faker.internet.userName(),
-      addedDate: faker.date.recent(),
-      likes: Math.floor(Math.random() * (50 - 5 + 1)) + 5
-=======
 function generateSongs() {
   const songsArray = [];
   const liistLength = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
@@ -70,7 +43,6 @@ function generateSongs() {
       title: faker.lorem.words(),
       artist: faker.name.findName(),
       addedBy: faker.internet.userName()
->>>>>>> feature/API_Router
     };
     songsArray.push(songObj);
   }
@@ -78,19 +50,11 @@ function generateSongs() {
   return songsArray;
 }
 
-<<<<<<< HEAD
-function generateLiistData () {
-=======
 function generateLiistData() {
->>>>>>> feature/API_Router
   return {
     owner: faker.internet.userName(),
     name: faker.lorem.words(),
     description: faker.lorem.sentence(),
-<<<<<<< HEAD
-    updatedDate: faker.date.recent(),
-=======
->>>>>>> feature/API_Router
     songs: generateSongs()
   };
 }
@@ -104,11 +68,6 @@ function tearDownDb() {
 // ─── TEST SUITES ────────────────────────────────────────────────────────────────
 //
 
-<<<<<<< HEAD
-
-
-
-=======
 describe('Liists API resource', function() {
   // START SERVER & DATABASE CONNECTION
   before(function() {
@@ -354,4 +313,3 @@ describe('Liists API resource', function() {
     });
   });
 });
->>>>>>> feature/API_Router
