@@ -32,7 +32,8 @@ liistSchema.methods.serialize = function() {
     name: this.name,
     description: this.description,
     updatedDate: this.updatedDate,
-    songs: this.songs
+    songs: this.songs,
+    numOfSongs: this.songs.length
   };
 };
 

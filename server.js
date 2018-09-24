@@ -27,11 +27,6 @@ app.use(morgan('common'));
 // ─── ROUTES AND ENDPOINTS ───────────────────────────────────────────────────────
 //
 
-// ROOT
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html');
-});
-
 // ROUTE: /LIISTS
 app.use('/liists', liistsRouter);
 
@@ -39,7 +34,6 @@ app.use('/liists', liistsRouter);
 app.use('*', function(req, res) {
   res.status(404).json({ message: 'Resource Not Found' });
 });
-
 
 //
 // ─── SERVER LOGIC ───────────────────────────────────────────────────────────────
@@ -57,7 +51,7 @@ function runServer (databaseURL, port = PORT) {
         }
         server = app
           .listen(port, () => {
-            console.log(`Your app is listening on port ${port}!`);
+            console.log(`Your app is listening on port ${port}! Database URL is ${databaseURL}`);
             resolve();
           })
           .on('error', err => {

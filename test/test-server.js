@@ -234,7 +234,7 @@ describe('Liists API resource', function() {
         })
         // inspect response
         .then(function(res) {
-          expect(res).to.have.status(204);
+          expect(res).to.have.status(201);
           
           return Liist.findById(liistId);
         })
@@ -274,7 +274,7 @@ describe('Liists API resource', function() {
         })
         // inspect response and return call to db to ensure deletion
         .then(function(res) {
-          expect(res).to.have.status(204);
+          expect(res).to.have.status(200);
           return Liist.findById(liist.id);
         })
         // check db for song deletion

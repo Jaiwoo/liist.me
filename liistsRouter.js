@@ -81,8 +81,8 @@ router.put('/:id/songs', jsonParser, (req, res) => {
 
   // add song to liist in db
   Liist
-    .findByIdAndUpdate(req.params.id, { '$push': { 'songs': songToAdd } })
-    .then(liist => res.status(204).json(liist))
+    .findByIdAndUpdate(req.params.id, { '$push': { 'songs': songToAdd } }, { 'new': true })
+    .then(liist => res.status(201).json(liist.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ message: 'Internal Server Error.' });
@@ -103,9 +103,9 @@ router.delete('/:id/songs', jsonParser, (req, res) => {
 
   let songID = req.body.songID;
 
-  Liist.findByIdAndUpdate(req.params.id, { '$pull': { 'songs': { '_id': songID } } })
+  Liist.findByIdAndUpdate(req.params.id, { '$pull': { 'songs': { '_id': songID } } }, { 'new': true })
     .then(liist => {
-      res.status(204).json(liist);
+      res.status(200).json(liist.serialize());
     })
     .catch(err => {
       console.error(err);

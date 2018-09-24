@@ -75,3 +75,12 @@ table {
   color: black;
   background-color: white;
 }
+
+legend {
+  margin: 0 auto;
+}
+
+fieldset {
+  border: 0;
+}
+
