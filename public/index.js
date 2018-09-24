@@ -65,7 +65,7 @@ function render(state) {
 // ─── API CALLS ──────────────────────────────────────────────────────────────────
 //
 
-const API_URL = 'http://localhost:8080/liists';
+const API_URL = '/liists';
 
 // GET /liists (GET ALL LIISTS)
 function getRecentLiists(callback) {
