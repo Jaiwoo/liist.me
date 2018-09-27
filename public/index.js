@@ -34,8 +34,9 @@ function render(state) {
     $('#delete-liist-btn').on('click', function() {
       let del = confirm(`Are you sure you want to delete liist ${STATE.currentLiist.name}?`);
       if (del) {
-        deleteCurrentLiist();
-        getRecentLiists(processLiistsData);
+        deleteCurrentLiist(function() {
+          getRecentLiists(processLiistsData);
+        });
       }
     });
     // delete song click handler
@@ -194,13 +195,12 @@ function generateLiistsTable(data) {
 
   const liistsTable = `
     <div id="liists-container" class="container">
-      <h2 id="liists-container-title" class="container-title">Recent Liists</h2>
       <table id="liists-table">
         <thead>
           <tr>
             <th>liist name</th>
             <th>created by</th>
-            <th style="width: 10%">🎵's</th>
+            <th style="width: 10%"><i class="fas fa-music"></i>'s</th>
           </tr>
         </thead>
         <tbody id="liists-table-body">
@@ -225,7 +225,7 @@ function generateCurrentLiistTable(liist) {
           <td class="song-title">${liist.songs[index].title}</td>
           <td class="song-artist">${liist.songs[index].artist}</td>
           <td class="song-addedBy">${liist.songs[index].addedBy}</td>
-          <td class="song-delete-btn">X</td>
+          <td class="song-delete-btn"><i class="fas fa-minus-circle"></i></td>
         </tr>`
       );
     }
@@ -235,19 +235,18 @@ function generateCurrentLiistTable(liist) {
     const liistTable = `
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
-          <h2 id="liist-name">${liist.name}</h2>
-          <h3 id="liist-owner">Created By: ${liist.owner}</h3>
-          <div id="liist-description">${liist.description}</div>
+          <h2 id="liist-name">${liist.owner}'s ${liist.name}</h2>
+          <p id="liist-description">${liist.description}</p>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
         <table id="current-liist-table">
           <thead>
             <tr>
-              <th style="width: 40%">track</th>
-              <th style="width: 25%">artist</th>
-              <th style="width: 25%">added by</th>
-              <th>❌</th>
+              <th style="width: 32%">track</th>
+              <th style="width: 32%">artist</th>
+              <th style="width: 20%">added by</th>
+              <th style="width: 5%"><i class="fas fa-trash"></i></th>
             </tr>
           </thead>
           <tbody id="current-liist-table-body">
@@ -262,9 +261,8 @@ function generateCurrentLiistTable(liist) {
     const addSongMessage = `
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
-          <h2 id="liist-name">${liist.name}</h2>
-          <h3 id="liist-owner">Created By: ${liist.owner}</h3>
-          <div id="liist-description">${liist.description}</div>
+          <h2 id="liist-name">${liist.owner}'s ${liist.name}</h2>
+          <p id="liist-description">${liist.description}</p>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
@@ -403,4 +401,15 @@ $('#create-btn').on('click', function() {
 $('#banner-text').on('click', function() {
   $('#landing-container').show();
   $('#data').empty();
+});
+
+$('#theme-btn').on('click', function() {
+  if($('body').hasClass('t--dark')) {
+    $('body').removeClass('t--dark');
+    $('body').addClass('t--light');
+  }
+  else if ($('body').hasClass('t--light')) {
+    $('body').removeClass('t--light');
+    $('body').addClass('t--dark');
+  }
 });

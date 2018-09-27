@@ -1,23 +1,18 @@
 /*
  * ─── MAIN CLIENT STYLES ─────────────────────────────────────────────────────────
  */
-.container {
-  margin: 10px 0;
-  width: 90vw;
-  width: 90%;
-  margin: 20px auto;
-  text-align: center;
-  color: mintcream;
-  background-color: rgba(27, 29, 32, 0.6);
-  border-radius: 4px;
-}
 
 #banner-text:hover {
   cursor: pointer;
 }
 
+.banner {
+  font-family: 'Monoton', regular;
+  font-size: 20pt;
+  text-align: center;
+}
+
 #nav-container {
-  margin: 10px 0;
   width: 90vw;
   width: 90%;
   margin: 20px auto;
@@ -26,54 +21,30 @@
 }
 
 .nav-button {
-  color: white;
-  background-color: black;
   border-radius: 4px;
 }
 
 .liist-button {
-  color: white;
-  background-color: black;
   border-radius: 4px;
 }
 
-.liist-button:hover {
-  color: black;
-  background-color: white;
-}
-
-.nav-button:hover {
-  color: black;
-  background-color: white;
-}
-
-.banner {
-  text-align: center
+.container {
+  width: 95vw;
+  width: 95%;
+  margin: 20px auto;
+  text-align: center;
+  font-size: 12pt;
+  border-radius: 4px;
 }
 
 table {
-  width: 100%
+  width: 100%;
 }
 
-#liists-table .liists-table-row:hover {
-  background-color: orange;
-  cursor: pointer;
-}
-
-#current-liist-table .song-delete-btn:hover {
-  color: red;
-  cursor: pointer
-}
-
-.form-submit {
-  color: white;
-  background-color: black;
-  border-radius: 4px;
-}
-
-.form-submit:hover {
-  color: black;
-  background-color: white;
+thead {
+  font-family: 'Roboto', sans-serif;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
 }
 
 legend {
@@ -84,3 +55,137 @@ fieldset {
   border: 0;
 }
 
+.form-submit {
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+#liists-table .liists-table-row:hover {
+  background-color: orange;
+  cursor: pointer;
+}
+
+#current-liist-table .current-liist-table-row:hover {
+  background-color: orange;
+}
+
+#current-liist-table .song-delete-btn:hover {
+  color: red;
+  cursor: pointer
+}
+
+/* DARK THEME */
+
+.t--dark {
+  font-family: 'Montserrat', sans-serif;
+  background-color: rgb(45, 45, 45);
+}
+
+.t--dark .container {
+  color: whitesmoke;
+  background-color: rgb(60, 60, 60);
+}
+
+.t--dark .nav-button {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+.t--dark .liist-button {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+.t--dark .liist-button:hover {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+.t--dark .nav-button:hover {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+.t--dark .banner {
+  color: whitesmoke;
+}
+
+.t--dark .form-submit {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+.t--dark .form-submit:hover {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+/* LIGHT THEME */
+
+.t--light {
+  font-family: 'Montserrat', sans-serif;
+  background-color: whitesmoke;
+}
+
+.t--light .container {
+  color: rgb(27, 29, 32);
+  background-color: rgb(190, 190, 190);
+}
+
+.t--light .nav-button {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+.t--light .liist-button {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+.t--light .liist-button:hover {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+.t--light .nav-button:hover {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+.t--light .banner {
+  color: rgb(27, 29, 32);
+}
+
+.t--light .form-submit {
+  color: rgb(27, 29, 32);
+  background-color: whitesmoke;
+}
+
+.t--light .form-submit:hover {
+  color: whitesmoke;
+  background-color: rgb(27, 29, 32);
+}
+
+/*
+ * ─── MEDIA QUERIES ──────────────────────────────────────────────────────────────
+ */
+
+/* initial query for large screens*/
+@media screen and (min-width: 850px) and (min-height: 450px), (min-height: 1000px) {
+
+  * {
+    font-size: 18pt;
+  }
+
+  .container {
+    max-width: 900px;
+    max-width: 75vw;
+  }
+
+  #landing-container {
+    font-size: 20pt;
+    max-width: 700px;
+    max-width: 50vw;
+  }
+
+}
