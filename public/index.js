@@ -199,7 +199,7 @@ function generateLiistsTable(data) {
       `<tr id="${data.liists[index].id}" class="liists-table-row">
         <td>${data.liists[index].name}</td>
         <td>${data.liists[index].description}</td>
-        <td>${data.liists[index].numOfSongs}</td>
+        <td class="num-of-songs">${data.liists[index].numOfSongs}</td>
       </tr>`
     );
   }
@@ -252,14 +252,17 @@ function generateCurrentLiistTable(liist) {
       <nav id="nav-container">
         <button id="get-liists-btn" class="nav-button">Get liists</button>
         <button id="create-btn" class="nav-button">Create a liist</button>
+        <button id="share-btn" class="nav-button"><i class="fas fa-share-square"></i></button>
       </nav>
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
           <h2 id="liist-name">${liist.name}</h2>
           <p id="liist-description">${liist.description}</p>
+          <div aria-hidden="true" class="customHr">.</div>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
+        <button id="edit-liist-btn" class="liist-button">Edit Liist</button>
         <table id="current-liist-table">
           <thead>
             <tr>
@@ -286,9 +289,11 @@ function generateCurrentLiistTable(liist) {
         <div id="liist-container-info" class="container-info">
           <h2 id="liist-name">${liist.name}</h2>
           <p id="liist-description">${liist.description}</p>
+          <div aria-hidden="true" class="customHr">.</div>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
+        <button id="edit-liist-btn" class="liist-button">Edit Liist</button>
         <p id="add-song-message">Liist is currently empty, add a song above.</p>
       </div>
     `;
@@ -358,7 +363,6 @@ function generateCreateForm() {
   const createFormHTML = `
     <nav id="nav-container">
       <button id="get-liists-btn" class="nav-button">Get liists</button>
-      <button id="create-btn" class="nav-button">Create a liist</button>
     </nav> 
     <div id="create-liist-container" class="container">
       <form id="create-liist-form" role="form" action="#">
