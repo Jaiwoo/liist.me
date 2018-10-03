@@ -9,7 +9,7 @@ const chaiHTTP = require('chai-http');
 const faker = require('faker');
 const mongoose = require('mongoose');
 
-const { Liist } = require('../models');
+const { Liist, User } = require('../models');
 const { app, runServer, closeServer } = require('../server');
 const { TEST_DATABASE_URL } = require('../config');
 
@@ -20,43 +20,65 @@ chai.use(chaiHTTP);
 // ─── SEED TEST DATABASE ─────────────────────────────────────────────────────────
 //
 
+function seedUserData() {
+  console.log(`Seeding test User data`);
+
+  const seedData = [];
+  const dataBaseLength = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+
+  for (let i = 0; i<= dataBaseLength; i++) {
+    seedData.push(generateUserData());
+  }
+
+  return User.insertMany(seedData);
+}
+
+function generateUserData() {
+  return {
+    userEmail: faker.internet.email()
+  };
+}
+
 function seedLiistData() {
   console.log('Seeding test Liist data');
 
   const seedData = [];
-  const dataBaseLength = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+  const dataBaseLength = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
 
-  for (let i = 0; i <= dataBaseLength; i++) {
-    seedData.push(generateLiistData());
-  }
-
-  // INSERT SEED DATA TO MONGO
-  return Liist.insertMany(seedData);
+  // GET USER FROM DB
+  return User.findOne()
+    .then(function(user) {
+      for (let i = 0; i <= dataBaseLength; i++) {
+        seedData.push(generateLiistData(user._id));
+      }
+      // INSERT SEED DATA TO MONGO
+      return Liist.insertMany(seedData);
+    });
 }
 
-function generateSongs() {
+function generateLiistData(userID) {
+  
+  return {
+    owner: userID,
+    name: faker.lorem.words(),
+    description: faker.lorem.sentence(),
+    songs: generateSongs(userID),
+  };
+}
+
+function generateSongs(userID) {
   const songsArray = [];
-  const liistLength = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+  const liistLength = Math.floor(Math.random() * (10 - 5 + 1)) + 5;
 
   for (let i = 0; i <= liistLength; i++) {
     const songObj = {
       title: faker.lorem.words(),
       artist: faker.name.findName(),
-      addedBy: faker.internet.userName()
+      addedBy: userID
     };
     songsArray.push(songObj);
   }
-
   return songsArray;
-}
-
-function generateLiistData() {
-  return {
-    owner: faker.internet.userName(),
-    name: faker.lorem.words(),
-    description: faker.lorem.sentence(),
-    songs: generateSongs()
-  };
 }
 
 function tearDownDb() {
@@ -72,6 +94,9 @@ describe('Liists API resource', function() {
   // START SERVER & DATABASE CONNECTION
   before(function() {
     return runServer(TEST_DATABASE_URL);
+  });
+  beforeEach(function() {
+    return seedUserData();
   });
   // SEED TEST DATA
   beforeEach(function() {
@@ -90,53 +115,60 @@ describe('Liists API resource', function() {
   describe('GET to /liists', function() {
     it('should return all existing liists', function() {
       let res;
-      return chai
-        .request(app)
-        .get('/liists')
-        .then(function(_res) {
-          res = _res;
-          expect(res).to.have.status(200);
-          expect(res.body.liists).to.have.lengthOf.at.least(1);
-
-          return Liist.countDocuments();
-        })
-        .then(function(count) {
-          expect(res.body.liists).to.have.lengthOf(count);
+      return User.findOne()
+        .then(function(user) {
+          return chai
+            .request(app)
+            .get('/liists')
+            .set('Cookie', `userID=${user._id}`)
+            .then(function(_res) {
+              res = _res;
+              expect(res).to.have.status(200);
+              expect(res.body.liists).to.have.lengthOf.at.least(1);
+    
+              return Liist.countDocuments();
+            })
+            .then(function(count) {
+              expect(res.body.liists).to.have.lengthOf(count);
+            });
         });
     });
 
     it('should return liists with the right information', function() {
       let testLiist;
-      return chai
-        .request(app)
-        .get('/liists')
-        // inspect response formatting & keys
-        .then(function(res) {
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body.liists).to.be.a('array');
-          expect(res.body.liists).to.have.lengthOf.at.least(1);
-
-          res.body.liists.forEach(function(liist) {
-            expect(liist).to.be.a('object');
-            expect(liist).to.include.keys(
-              'id', 'addedDate', 'owner', 'name', 'description', 'songs', 'updatedDate');
-          });
-          testLiist = res.body.liists[0];
-          return Liist.findById(testLiist.id);
-        })
-        // compare to database
-        .then(function(liist) {
-          expect(testLiist.id).to.equal(liist.id);
-          expect(testLiist.owner).to.equal(liist.owner);
-          expect(testLiist.name).to.equal(liist.name);
-          expect(testLiist.description).to.equal(liist.description);
-          expect(testLiist.songs).to.be.a('array');
-          expect(testLiist.songs).to.have.lengthOf.at.least(1);
-          expect(testLiist.songs[0].likes).to.equal(liist.songs[0].likes);
-          expect(testLiist.songs[0].title).to.equal(liist.songs[0].title);
-          expect(testLiist.songs[0].artist).to.equal(liist.songs[0].artist);
-          expect(testLiist.songs[0].addedBy).to.equal(liist.songs[0].addedBy);
+      return User.findOne()
+        .then(function(user) {
+          return chai
+            .request(app)
+            .get('/liists')
+            .set('Cookie', `userID=${user._id}`)
+            // inspect response formatting & keys
+            .then(function(res) {
+              expect(res).to.have.status(200);
+              expect(res).to.be.json;
+              expect(res.body.liists).to.be.a('array');
+              expect(res.body.liists).to.have.lengthOf.at.least(1);
+    
+              res.body.liists.forEach(function(liist) {
+                expect(liist).to.be.a('object');
+                expect(liist).to.include.keys(
+                  'id', 'addedDate', 'owner', 'name', 'description', 'songs', 'updatedDate');
+              });
+              testLiist = res.body.liists[0];
+              return Liist.findById(testLiist.id);
+            })
+            // compare to database
+            .then(function(liist) {
+              expect(testLiist.id).to.equal(liist.id);
+              expect(testLiist.owner).to.equal(liist.owner.userEmail);
+              expect(testLiist.name).to.equal(liist.name);
+              expect(testLiist.description).to.equal(liist.description);
+              expect(testLiist.songs).to.be.a('array');
+              expect(testLiist.songs).to.have.lengthOf.at.least(1);
+              expect(testLiist.songs[0].likes).to.equal(liist.songs[0].likes);
+              expect(testLiist.songs[0].title).to.equal(liist.songs[0].title);
+              expect(testLiist.songs[0].artist).to.equal(liist.songs[0].artist);
+            });
         });
     });
   });
@@ -147,32 +179,36 @@ describe('Liists API resource', function() {
       let res;
       let liistToGet;
 
-      return chai
-        // get liists and use 1st index to test endpoint
-        .request(app)
-        .get('/liists')
-        .then(function(_res) {
-          res = _res;
-          liistToGet = res.body.liists[0];
+      return User.findOne()
+        .then(function(user) {
           return chai
+          // get liists and use 1st index to test endpoint
             .request(app)
-            .get(`/liists/${liistToGet.id}`);
-        })
-        // inspect response
-        .then(function(_res) {
-          res = _res;
-          expect(res).to.have.status(200);
-          expect(res).to.be.json;
-          expect(res.body).to.be.a('object');
-
-          return Liist.findById(liistToGet.id);
-        })
-        // compare to database
-        .then(function(liist) {
-          expect(res.body.id).to.equal(liist.id);
-          expect(res.body.owner).to.equal(liist.owner);
-          expect(res.body.name).to.equal(liist.name);
-          expect(res.body.description).to.equal(liist.description);
+            .get('/liists')
+            .set('Cookie', `userID=${user._id}`)
+            .then(function(_res) {
+              res = _res;
+              liistToGet = res.body.liists[0];
+              return chai
+                .request(app)
+                .get(`/liists/${liistToGet.id}`);
+            })
+            // inspect response
+            .then(function(_res) {
+              res = _res;
+              expect(res).to.have.status(200);
+              expect(res).to.be.json;
+              expect(res.body).to.be.a('object');
+    
+              return Liist.findById(liistToGet.id);
+            })
+            // compare to database
+            .then(function(liist) {
+              expect(res.body.id).to.equal(liist.id);
+              expect(res.body.owner).to.equal(liist.owner.userEmail);
+              expect(res.body.name).to.equal(liist.name);
+              expect(res.body.description).to.equal(liist.description);
+            });
         });
     });
   });
@@ -180,34 +216,39 @@ describe('Liists API resource', function() {
   // POST TO /LIISTS
   describe('POST to /liists', function() {
     it('should add new liist to db & return serialized version', function() {
-      const newLiist = generateLiistData();
-
-      return chai
-        .request(app)
-        .post('/liists')
-        .send(newLiist)
-        // inspect response
-        .then(function(res) {
-          expect(res).to.have.status(201);
-          expect(res).to.be.json;
-          expect(res.body).to.be.a('object');
-          expect(res.body).to.include.keys(
-            'id', 'addedDate', 'owner', 'name', 'description', 'songs', 'updatedDate');
-          expect(res.body.id).to.not.be.null;
-          expect(res.body.name).to.equal(newLiist.name);
-          expect(res.body.owner).to.equal(newLiist.owner);
-          expect(res.body.description).to.equal(newLiist.description);
-          expect(res.body.songs).to.be.a('array');
-          expect(res.body.updatedDate).to.not.be.null;
-          expect(res.body.addedDate).to.not.be.null;
-
-          return Liist.findById(res.body.id);
-        })
-        // check db data matches test data
-        .then(function(liist) {
-          expect(liist.owner).to.equal(newLiist.owner);
-          expect(liist.name).to.equal(newLiist.name);
-          expect(liist.description).to.equal(newLiist.description);
+      // GET USER THEN POST NEW LIIST
+      return User.findOne()
+        .then(function(user) {
+          const newLiist = generateLiistData(user._id);
+          return chai
+            .request(app)
+            .post('/liists')
+            .set('Cookie', `userID=${user._id}`)
+            .send(newLiist)
+          // inspect response
+            .then(function(res) {
+              expect(res).to.have.status(201);
+              expect(res).to.be.json;
+              expect(res.body).to.be.a('object');
+              expect(res.body).to.include.keys(
+                'id', 'addedDate', 'name', 'description', 'songs', 'updatedDate', 'numOfSongs');
+              expect(res.body.owner).to.not.be.null;
+              expect(res.body.id).to.not.be.null;
+              expect(res.body.name).to.equal(newLiist.name);
+              expect(res.body.owner).to.equal(newLiist.owner.userEmail);
+              expect(res.body.description).to.equal(newLiist.description);
+              expect(res.body.songs).to.be.a('array');
+              expect(res.body.updatedDate).to.not.be.null;
+              expect(res.body.addedDate).to.not.be.null;
+  
+              return Liist.findById(res.body.id);
+            })
+          // check db data matches test data
+            .then(function(liist) {
+              expect(liist.owner._id).to.deep.equal(newLiist.owner);
+              expect(liist.name).to.equal(newLiist.name);
+              expect(liist.description).to.equal(newLiist.description);
+            });
         });
     });
   });
@@ -215,21 +256,24 @@ describe('Liists API resource', function() {
   // PUT TO /LIISTS/:ID
   describe('PUT to /liist/:id', function() {
     it('should add song to liist by ID', function() {
-      // generate song to add
-      const songObj = {
-        title: faker.lorem.words(),
-        artist: faker.name.findName(),
-        addedBy: faker.internet.userName()
-      };
       let liistId;
+      let userId;
+      let songObj;
       // get random liist from db then PUT to its ID
       return Liist
         .findOne()
         .then(function(liist) {
           liistId = liist.id;
+          userId = liist.owner._id;
+          songObj = {
+            title: faker.lorem.words(),
+            artist: faker.name.findName(),
+            addedBy: userId
+          };
           return chai
             .request(app)
             .put(`/liists/${liistId}/songs`)
+            .set('Cookie', `userID=${userId}`)
             .send(songObj);
         })
         // inspect response
@@ -243,7 +287,7 @@ describe('Liists API resource', function() {
           const liistLength = liist.songs.length - 1;
           expect(liist.songs[liistLength].title).to.equal(songObj.title);
           expect(liist.songs[liistLength].artist).to.equal(songObj.artist);
-          expect(liist.songs[liistLength].addedBy).to.equal(songObj.addedBy);
+          // expect(liist.songs[liistLength].addedBy).to.equal(songObj.addedBy);
         });
     });
   });

@@ -6,6 +6,7 @@
 
 // EXPRESS
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 // MONGOOSE
@@ -17,18 +18,23 @@ const { PORT, DATABASE_URL } = require('./config');
 
 // ROUTERS
 const liistsRouter = require('./liistsRouter');
+const usersRouter = require('./usersRouter');
 
 // DEFINE APP
 const app = express();
 app.use(express.static('public'));
 app.use(morgan('common'));
+app.use(cookieParser());
 
 //
-// ─── ROUTES AND ENDPOINTS ───────────────────────────────────────────────────────
+// ─── ROUTERS AND ENDPOINTS ───────────────────────────────────────────────────────
 //
 
-// ROUTE: /LIISTS
+// /LIISTS
 app.use('/liists', liistsRouter);
+
+// /USERS
+app.use('/users', usersRouter);
 
 // CATCH-ALL
 app.use('*', function(req, res) {
