@@ -15,10 +15,10 @@ function render(state) {
   if (state.page === 'liists') {
     const liistsTableHtml = generateLiistsTable(state.liists);
     $('#data').html(liistsTableHtml);
-    // liists row click handlers
-    $('#liists-table .liists-table-row').click(function() {
-      getLiistByID($(this).attr('id'), renderCurrentLiist);
-    });
+    // // liists row click handlers
+    // $('#liists-table .liists-table-row').click(function() {
+    //   getLiistByID($(this).attr('id'), renderCurrentLiist);
+    // });
   } 
   // render current liist page
   else if (state.page === 'currentLiist') {
@@ -35,7 +35,7 @@ function render(state) {
       let del = confirm(`Are you sure you want to delete liist ${STATE.currentLiist.name}?`);
       if (del) {
         deleteCurrentLiist(function() {
-          getRecentLiists(processLiistsData);
+          getUserLiists(processLiistsData);
         });
       }
     });
@@ -66,12 +66,25 @@ function render(state) {
 // ─── API CALLS ──────────────────────────────────────────────────────────────────
 //
 
-const API_URL = '/liists';
+const API_LIISTS_URL = '/liists';
+const API_USERS_URL = '/users';
+
+// GET /users (check if user exists)
+function getUser(userEmail, callback) {
+
+  const settings = {
+    url: API_USERS_URL + `/${userEmail}`,
+    datatype: 'json',
+    type: 'GET',
+    success: callback
+  };
+  $.ajax(settings);
+}
 
 // GET /liists (GET ALL LIISTS)
-function getRecentLiists(callback) {
+function getUserLiists(callback) {
   const settings = {
-    url: API_URL,
+    url: API_LIISTS_URL,
     datatype: 'json',
     type: 'GET',
     success: callback
@@ -82,7 +95,7 @@ function getRecentLiists(callback) {
 // GET to /liists:ID (GET LIIST BY ID)
 function getLiistByID(ID, callback) {
   const settings = {
-    url: API_URL + `/${ID}`,
+    url: API_LIISTS_URL + `/${ID}`,
     datatype: 'json',
     type: 'GET',
     success: callback
@@ -94,7 +107,7 @@ function getLiistByID(ID, callback) {
 // PUT to /liists:ID (ADD SONG TO CURRENT LIIST)
 function addSongToLiist(songToAdd, callback) {
   const settings = {
-    url: API_URL + `/${STATE.currentLiistID}/songs`,
+    url: API_LIISTS_URL + `/${STATE.currentLiistID}/songs`,
     data: JSON.stringify(songToAdd),
     contentType: 'application/json',
     datatype: 'json',
@@ -108,7 +121,7 @@ function addSongToLiist(songToAdd, callback) {
 // POST to /liists (CREATE NEW LIIST)
 function createNewLiist(userInput, callback) {
   const settings = {
-    url: API_URL,
+    url: API_LIISTS_URL,
     data: JSON.stringify(userInput),
     contentType: 'application/json',
     dataType: 'json',
@@ -121,7 +134,7 @@ function createNewLiist(userInput, callback) {
 // DELETE current liist by ID
 function deleteCurrentLiist(callback) {
   const settings = {
-    url: API_URL + `/${STATE.currentLiistID}`,
+    url: API_LIISTS_URL + `/${STATE.currentLiistID}`,
     datatype: 'json',
     type: 'DELETE',
     success: callback
@@ -133,7 +146,7 @@ function deleteCurrentLiist(callback) {
 // DELETE song in current liist
 function deleteSongInCurrentLiist(songID, callback) {
   const settings = {
-    url: API_URL + `/${STATE.currentLiistID}/songs`,
+    url: API_LIISTS_URL + `/${STATE.currentLiistID}/songs`,
     data: JSON.stringify({ songID: songID }),
     contentType: 'application/json',
     datatype: 'json',
@@ -159,7 +172,7 @@ function processLiistsData(response) {
   }
   else {
     newState = {
-      errorMessage: 'There are currently no Liists. Create a new Liist above to get started.',
+      errorMessage: 'You currently have no Liists. Create a new Liist above to get started.',
       page: 'error-page'
     };
   }
@@ -185,7 +198,7 @@ function generateLiistsTable(data) {
     liistsTableRows.push(
       `<tr id="${data.liists[index].id}" class="liists-table-row">
         <td>${data.liists[index].name}</td>
-        <td>${data.liists[index].owner}</td>
+        <td>${data.liists[index].description}</td>
         <td>${data.liists[index].numOfSongs}</td>
       </tr>`
     );
@@ -194,12 +207,16 @@ function generateLiistsTable(data) {
   liistsTableRows = liistsTableRows.join('');
 
   const liistsTable = `
+    <nav id="nav-container">
+      <button id="get-liists-btn" class="nav-button">Get liists</button>
+      <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
     <div id="liists-container" class="container">
       <table id="liists-table">
         <thead>
           <tr>
-            <th>liist name</th>
-            <th>created by</th>
+            <th style="width: 30%">liist name</th>
+            <th style="width: 60%">description</th>
             <th style="width: 10%"><i class="fas fa-music"></i>'s</th>
           </tr>
         </thead>
@@ -224,7 +241,6 @@ function generateCurrentLiistTable(liist) {
         `<tr id="${liist.songs[index]._id}" class="current-liist-table-row">
           <td class="song-title">${liist.songs[index].title}</td>
           <td class="song-artist">${liist.songs[index].artist}</td>
-          <td class="song-addedBy">${liist.songs[index].addedBy}</td>
           <td class="song-delete-btn"><i class="fas fa-minus-circle"></i></td>
         </tr>`
       );
@@ -233,9 +249,13 @@ function generateCurrentLiistTable(liist) {
     liistTableRows = liistTableRows.join('');
   
     const liistTable = `
+      <nav id="nav-container">
+        <button id="get-liists-btn" class="nav-button">Get liists</button>
+        <button id="create-btn" class="nav-button">Create a liist</button>
+      </nav>
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
-          <h2 id="liist-name">${liist.owner}'s ${liist.name}</h2>
+          <h2 id="liist-name">${liist.name}</h2>
           <p id="liist-description">${liist.description}</p>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
@@ -245,7 +265,6 @@ function generateCurrentLiistTable(liist) {
             <tr>
               <th style="width: 32%">track</th>
               <th style="width: 32%">artist</th>
-              <th style="width: 20%">added by</th>
               <th style="width: 5%"><i class="fas fa-trash"></i></th>
             </tr>
           </thead>
@@ -259,9 +278,13 @@ function generateCurrentLiistTable(liist) {
   }
   else {
     const addSongMessage = `
+      <nav id="nav-container">
+        <button id="get-liists-btn" class="nav-button">Get liists</button>
+        <button id="create-btn" class="nav-button">Create a liist</button>
+      </nav>
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
-          <h2 id="liist-name">${liist.owner}'s ${liist.name}</h2>
+          <h2 id="liist-name">${liist.name}</h2>
           <p id="liist-description">${liist.description}</p>
         </div>
         <button id="add-song-btn" class="liist-button">Add Song</button>
@@ -288,14 +311,14 @@ function getSongNameToDelete(ID) {
 
 function generateAddSongForm(liist) {
   const addSongFormHTML = `
+    <nav id="nav-container">
+      <button id="get-liists-btn" class="nav-button">Get liists</button>
+      <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
     <div id="add-song-container" class="container">
       <form id="add-song-form" role="form" action="#">
         <fieldset>
           <legend>Add a song to ${liist.name}.</legend>
-          <label for="add-song-addedBy">Your Name:</label>
-          <br>
-          <input id="add-song-addedBy" type="text">
-          <br>
           <label for="add-song-name">Song Name:</label>
           <br>
           <input id="add-song-name" type="text">
@@ -320,7 +343,6 @@ function handleAddSongSubmit() {
     const songToAdd = {
       title: $('#add-song-name').val(),
       artist: $('#add-song-artist').val(),
-      addedBy: $('#add-song-addedBy').val(),
       addedDate: new Date()
     };
 
@@ -334,14 +356,14 @@ function handleAddSongSubmit() {
 
 function generateCreateForm() {
   const createFormHTML = `
+    <nav id="nav-container">
+      <button id="get-liists-btn" class="nav-button">Get liists</button>
+      <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav> 
     <div id="create-liist-container" class="container">
       <form id="create-liist-form" role="form" action="#">
         <fieldset>
           <legend>Create a new liist & give it a fun description to share with others.</legend>
-          <label for="create-owner-name">Your Name:</label>
-          <br>
-          <input id="create-owner-name" type="text">
-          <br>
           <label for="create-liist-name">Liist Name:</label>
           <br>
           <input id="create-liist-name" type="text">
@@ -363,7 +385,6 @@ function handleCreateLiistSubmit() {
   $('#create-liist-form').submit(function(e) {
     e.preventDefault();
     const userInput = {
-      owner: $('#create-owner-name').val(),
       name: $('#create-liist-name').val(),
       description: $('#create-liist-description').val()
     };
@@ -377,6 +398,10 @@ function handleCreateLiistSubmit() {
 
 function generateErrorHTML() {
   const errorHTML = `
+    <nav id="nav-container">
+      <button id="get-liists-btn" class="nav-button">Get liists</button>
+      <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
     <div id="error-container" class="container">
       <p id="error-text">${STATE.errorMessage}</p>
     </div>
@@ -385,24 +410,42 @@ function generateErrorHTML() {
 }
 
 //
-// ─── NAV-BUTTON HANDLERS──────────────────────────────────────────────────────────
+// ───BUTTON HANDLERS──────────────────────────────────────────────────────────
 //
 
-$('#get-liists-btn').on('click', function() {
+// GET LIISTS
+$('body').on('click', '#get-liists-btn', function() {
   $('#landing-container').hide();
-  getRecentLiists(processLiistsData);
+  getUserLiists(processLiistsData);
 });
 
-$('#create-btn').on('click', function() {
-  $('#landing-container').hide();
+// CREATE LIIST
+$('body').on('click', '#create-btn', function() {
   setStateAndRender({ page: 'create-liist' });
 });
 
+// HOME BUTTON
 $('#banner-text').on('click', function() {
   $('#landing-container').show();
   $('#data').empty();
 });
 
+// GET STARTED
+$('#get-started-form').on('submit', function(e) {
+  e.preventDefault();
+  $('#landing-container').hide();
+  const userEmail = $('#user-login-email').val();
+  getUser(userEmail, function() {
+    getUserLiists(processLiistsData);
+  });
+});
+
+// liists row click handlers
+$('body').on('click', '#liists-table .liists-table-row', function() {
+  getLiistByID($(this).attr('id'), renderCurrentLiist);
+});
+
+// THEME TOGGLE
 $('#theme-btn').on('click', function() {
   if($('body').hasClass('t--dark')) {
     $('body').removeClass('t--dark');

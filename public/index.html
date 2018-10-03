@@ -30,17 +30,25 @@
     </header>
 
     <!-- navigation buttons -->
-    <nav id="nav-container">
-        <button id="get-liists-btn" class="nav-button">Get liists</button>
+    <!-- <nav id="nav-container">
+        <button id="get-liists-btn" class="nav-button">Recent liists</button>
         <button id="create-btn" class="nav-button">Create a liist</button>
-        <button id="theme-btn" class="nav-button"><i class="fas fa-lightbulb"></i></button>
-    </nav>
+    </nav> -->
 
     <!-- landing 'page' -->
     <div id="landing-container" class="container">
         <p id="landing-text">liist.me is a collaborative music playlist app. Check out recently added liists above or
             create your own and be sure to invite your friends to join the fun!
         </p>
+        <form id="get-started-form" action="#">
+            <fieldset>
+                <legend>Enter your email address to get started.</legend>
+                <!-- <label for="user-login-email">Email: </label> -->
+                <input id="user-login-email" type="text" placeholder="info@liist.me" required>
+                <br>
+                <button id="user-login-submit" class="nav-button" type="submit">Get Started</button>
+            </fieldset>
+        </form>
     </div>
 
     <!-- main data container for dynamic HTML -->
@@ -48,7 +56,8 @@
 
     <!-- footer -->
     <footer role="contentinfo">
-
+        <span id="footer-text">Created by Jaiwoo </span>
+        <button id="theme-btn" class="nav-button"><i class="fas fa-lightbulb"></i></button>
     </footer>
 
 

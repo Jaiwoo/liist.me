@@ -14,7 +14,7 @@ const { Liist } = require('./models');
 
 // GET /LIISTS (GET ALL LIISTS)
 router.get('/', (req, res) => {
-  Liist.find()
+  Liist.find({ owner: `${req.cookies.userID}`})
     .then(liists => {
       res.json({
         liists: liists.map(liist => liist.serialize())
@@ -40,7 +40,7 @@ router.get('/:id', (req, res) => {
 
 // POST /LIISTS (ADD NEW LIIST)
 router.post('/', jsonParser, (req, res) => {
-  const requiredFields = ['owner', 'name', 'description'];
+  const requiredFields = ['name', 'description'];
   for (let i=0; i< requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -52,7 +52,7 @@ router.post('/', jsonParser, (req, res) => {
   // add new liist to db
   Liist
     .create({
-      owner: req.body.owner,
+      owner: req.cookies.userID,
       name: req.body.name,
       description: req.body.description})
     .then(
@@ -65,7 +65,7 @@ router.post('/', jsonParser, (req, res) => {
 
 // PUT /LIISTS:ID/SONGS (ADD NEW SONG TO LIIST)
 router.put('/:id/songs', jsonParser, (req, res) => {
-  const requiredFields = ['title', 'artist', 'addedBy'];
+  const requiredFields = ['title', 'artist'];
   for (let i=0; i< requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -75,7 +75,7 @@ router.put('/:id/songs', jsonParser, (req, res) => {
     }
   }
   let songToAdd = {
-    addedBy: req.body.addedBy,
+    addedBy: req.cookies.userID,
     title: req.body.title,
     artist: req.body.artist};
 
