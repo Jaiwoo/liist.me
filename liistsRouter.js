@@ -63,8 +63,33 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-// PUT /LIISTS:ID/SONGS (ADD NEW SONG TO LIIST)
-router.put('/:id/songs', jsonParser, (req, res) => {
+// PUT /LIISTS:ID (EDIT LIIST INFO)
+router.put('/:id', jsonParser, (req, res) => {
+  const requiredFields = ['name', 'description'];
+  for (let i=0; i< requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Request body is missing ${field} field`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  let updatedInfo = {
+    name: req.body.name,
+    description: req.body.description};
+
+  // update liist in db
+  Liist
+    .findByIdAndUpdate(req.params.id, { 'name': updatedInfo.name, 'description': updatedInfo.description }, { 'new': true })
+    .then(liist => res.status(201).json(liist.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Internal server error'});
+    });
+});
+
+// POST /LIISTS:ID/SONGS (ADD NEW SONG TO LIIST)
+router.post('/:id/songs', jsonParser, (req, res) => {
   const requiredFields = ['title', 'artist'];
   for (let i=0; i< requiredFields.length; i++) {
     const field = requiredFields[i];

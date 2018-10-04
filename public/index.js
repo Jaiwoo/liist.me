@@ -15,10 +15,6 @@ function render(state) {
   if (state.page === 'liists') {
     const liistsTableHtml = generateLiistsTable(state.liists);
     $('#data').html(liistsTableHtml);
-    // // liists row click handlers
-    // $('#liists-table .liists-table-row').click(function() {
-    //   getLiistByID($(this).attr('id'), renderCurrentLiist);
-    // });
   } 
   // render current liist page
   else if (state.page === 'currentLiist') {
@@ -30,6 +26,13 @@ function render(state) {
       $('#data').html(addSongFormHTML);
       handleAddSongSubmit(STATE.currentLiistID);
     });
+    // edit liist click handler
+    $('#edit-liist-btn').on('click', function() {
+      const editLiistFormHTML = generateEditLiistForm(state.currentLiist);
+      $('#data').html(editLiistFormHTML);
+      handleEditLiistSubmit(STATE.currentLiistID);
+    });
+
     // delete liist click handler
     $('#delete-liist-btn').on('click', function() {
       let del = confirm(`Are you sure you want to delete liist ${STATE.currentLiist.name}?`);
@@ -104,14 +107,28 @@ function getLiistByID(ID, callback) {
   $.ajax(settings);
 }
 
-// PUT to /liists:ID (ADD SONG TO CURRENT LIIST)
+// PUT TO /liists:ID (EDIT LIIST INFO)
+function editCurrentLiist(userInput, callback) {
+  const settings = {
+    url: API_LIISTS_URL + `/${STATE.currentLiistID}`,
+    data: JSON.stringify(userInput),
+    contentType: 'application/json',
+    datatype: 'json',
+    type: 'PUT',
+    success: callback
+  };
+
+  $.ajax(settings);
+}
+
+// POST to /liists:ID/songs (ADD SONG TO CURRENT LIIST)
 function addSongToLiist(songToAdd, callback) {
   const settings = {
     url: API_LIISTS_URL + `/${STATE.currentLiistID}/songs`,
     data: JSON.stringify(songToAdd),
     contentType: 'application/json',
     datatype: 'json',
-    type: 'PUT',
+    type: 'POST',
     success: callback
   };
 
@@ -252,7 +269,6 @@ function generateCurrentLiistTable(liist) {
       <nav id="nav-container">
         <button id="get-liists-btn" class="nav-button">Get liists</button>
         <button id="create-btn" class="nav-button">Create a liist</button>
-        <button id="share-btn" class="nav-button"><i class="fas fa-share-square"></i></button>
       </nav>
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
@@ -324,6 +340,8 @@ function generateAddSongForm(liist) {
       <form id="add-song-form" role="form" action="#">
         <fieldset>
           <legend>Add a song to ${liist.name}.</legend>
+          <br>
+          <div aria-hidden="true" class="customHr">.</div>
           <label for="add-song-name">Song Name:</label>
           <br>
           <input id="add-song-name" type="text">
@@ -356,6 +374,53 @@ function handleAddSongSubmit() {
 }
 
 //
+// ─── EDIT LIIST HTML ────────────────────────────────────────────────────────────
+//
+
+function generateEditLiistForm(liist) {
+  const editLiistHTML = `
+  <nav id="nav-container">
+    <button id="get-liists-btn" class="nav-button">Get liists</button>
+    <button id="create-btn" class="nav-button">Create a liist</button>
+  </nav>
+  <div id="edit-liist-container" class="container">
+    <form id="edit-liist-form" role="form" action="#">
+      <fieldset>
+        <legend>Edit info for ${liist.name}.</legend>
+        <br>
+        <div aria-hidden="true" class="customHr">.</div>
+        <label for="edit-liist-name">Liist Name:</label>
+        <br>
+        <input id="edit-liist-name" type="text">
+        <br>
+        <label for="edit-liist-description">Description:</label>
+        <br>
+        <textarea id="edit-liist-description" type="text" rows="6"></textarea>
+        <br>
+        <input id="edit-liist-submit" class="form-submit" type="submit" value="Edit Liist">
+      </fieldset>
+    </form>
+  </div>
+  `;
+
+  return editLiistHTML;
+}
+
+function handleEditLiistSubmit() {
+  $('#edit-liist-form').on('submit', function(e) {
+    e.preventDefault();
+
+    const userInput = {
+      name: $('#edit-liist-name').val(),
+      description: $('#edit-liist-description').val()
+    };
+
+    editCurrentLiist(userInput, renderCurrentLiist);
+  });
+}
+
+
+//
 // ─── CREATE LIIST HTML ─────────────────────────────────────────────────────────
 //
 
@@ -367,14 +432,16 @@ function generateCreateForm() {
     <div id="create-liist-container" class="container">
       <form id="create-liist-form" role="form" action="#">
         <fieldset>
-          <legend>Create a new liist & give it a fun description to share with others.</legend>
+          <legend>Create a new liist & give it a fun description.</legend>
+          <br>
+          <div aria-hidden="true" class="customHr">.</div>
           <label for="create-liist-name">Liist Name:</label>
           <br>
           <input id="create-liist-name" type="text">
           <br>
           <label for="create-liist-description">Liist Description:</label>
           <br>
-          <textarea id="create-liist-description" type="text"></textarea>
+          <textarea id="create-liist-description" type="text" rows="6"></textarea>
           <br>
           <input id="create-liist-submit" class="form-submit" value="Create Liist" type="submit">
         </fieldset>
@@ -444,8 +511,8 @@ $('#get-started-form').on('submit', function(e) {
   });
 });
 
-// liists row click handlers
-$('body').on('click', '#liists-table .liists-table-row', function() {
+// LIISTS ROW CLICK HANDLERS
+$('body').on('click touchstart', '#liists-table .liists-table-row', function() {
   getLiistByID($(this).attr('id'), renderCurrentLiist);
 });
 
@@ -459,4 +526,14 @@ $('#theme-btn').on('click', function() {
     $('body').removeClass('t--light');
     $('body').addClass('t--dark');
   }
+});
+
+// FEATURES TOGGLE
+
+$('#card').flip({
+  trigger: 'manual'
+});
+
+$('#features-btn').on('click', function() {
+  $('#card').flip('toggle');
 });

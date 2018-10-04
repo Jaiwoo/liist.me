@@ -19,21 +19,28 @@ body {
   padding-bottom: 3rem;
 }
 
+.container {
+  width: 95vw;
+  width: 95%;
+  margin: 20px auto;
+  text-align: center;
+  font-size: 13pt;
+  border-radius: 4px;
+}
+
 footer {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 1rem;
+  padding: .5rem;
   font-size: 14pt;
   text-align: center;
 }
 
-a {
-  color: inherit;
+.footer-button-container {
+  font-size: 18pt;
 }
-
-
 
 #banner-text {
   margin: 0;
@@ -70,10 +77,27 @@ a {
   cursor: pointer;
 }
 
+#home-btn {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 1rem;
+  padding-top: 1.75rem;
+}
+
+#home-btn:hover {
+  cursor: pointer;
+}
+
 .banner {
   font-family: 'Monoton', regular;
   font-size: 18pt;
   text-align: center;
+}
+
+#landing-text {
+  font-size: 16pt;
 }
 
 #nav-container {
@@ -85,24 +109,26 @@ a {
 }
 
 .nav-button {
+  font-size: 16pt;
+  border-radius: 4px;
+}
+
+.form-submit {
+  font-size: 16pt;
   border-radius: 4px;
 }
 
 .liist-button {
   border-radius: 4px;
+  font-size: 12pt;
 }
 
 #user-login-submit {
   margin-top: 10px;
 }
 
-.container {
-  width: 95vw;
-  width: 95%;
-  margin: 20px auto;
-  text-align: center;
-  font-size: 12pt;
-  border-radius: 4px;
+#current-liist-table {
+  padding-top: 1rem;
 }
 
 table {
@@ -145,11 +171,6 @@ fieldset {
   margin: 10px 0;
 }
 
-#liists-table .liists-table-row:hover {
-  background-color: orange;
-  cursor: pointer;
-}
-
 #liist-name {
   font-size: 24pt;
 }
@@ -164,6 +185,16 @@ fieldset {
   background-color: rgb(27, 29, 32);
   margin-top: -6px;
   margin-bottom: 10px;
+}
+
+#features-container {
+  font-size: 16pt;
+}
+
+#features-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* DARK THEME */
@@ -201,6 +232,10 @@ fieldset {
   color: whitesmoke;
 }
 
+.t--dark .footer-button {
+  color: whitesmoke
+}
+
 /* LIGHT THEME */
 
 .t--light {
@@ -236,6 +271,10 @@ fieldset {
   color: rgb(27, 29, 32);
 }
 
+.t--light .footer-button {
+  color: rgb(27, 29, 32);
+}
+
 /*
  * ─── MEDIA QUERIES ──────────────────────────────────────────────────────────────
  */
@@ -247,19 +286,34 @@ fieldset {
     font-size: 20pt;
   }
 
+  #landing-text {
+    font-size: 24pt;
+  }
+
   .banner {
     font-size: 24pt;
   }
 
   .container {
-    max-width: 900px;
-    max-width: 75vw;
+    max-width: 700px;
+    max-width: 60vw;
   }
 
   #landing-container {
     font-size: 20pt;
     max-width: 700px;
-    max-width: 50vw;
+    max-width: 60vw;
+  }
+
+  #features-container {
+    font-size: 20pt;
+    max-width: 700px;
+    max-width: 60vw;
+  }
+
+  #liists-table .liists-table-row:hover {
+    background-color: orange;
+    cursor: pointer;
   }
 
   #current-liist-table .current-liist-table-row:hover {
@@ -285,7 +339,7 @@ fieldset {
     color: rgb(27, 29, 32);
     background-color: whitesmoke;
   }
-  .t--dark #mail-btn:hover {
+  .t--dark .footer-button:hover {
     color: orange;
   }
 
@@ -304,7 +358,7 @@ fieldset {
   .t--light #features-btn:hover {
     color: orange;
   }
-  .t--light #mail-btn:hover {
+  .t--light .footer-button:hover {
     color: orange;
   }
 

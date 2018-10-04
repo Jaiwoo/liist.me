@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
     <!-- local styles -->
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="/normalize.css">
     <link rel="stylesheet" href="/index.css">
 </head>
@@ -28,40 +29,68 @@
     <header role="banner" class="banner">
         <h1 id="banner-text">LIIST.ME </h1>
         <i id="theme-btn" class="fas fa-lightbulb"></i>
-        <i id="features-btn" class="fas fa-check-circle""></i>
+        <i id="features-btn" class="fas fa-clipboard-list"></i>
+        <i id="home-btn" class="fas fa-home" style="display:none"></i>
     </header>
 
-    <!-- landing 'page' -->
-    <div id="landing-container" class="container">
-        <p id="landing-text">liist.me lets you store playliists of music for safe keeping & reference. Be sure to share your liists with friends & enjoy!</p>
-        <p>Hit <i class="fas fa-check"></i> to peek what's in the works <i class="fas fa-grin-wink"></i></p>
-        <div aria-hidden="true" class="customHr">.</div>
-        <form id="get-started-form" action="#">
-            <fieldset>
-                <legend>Enter your email address to get started!</legend>
-                <!-- <label for="user-login-email">Email: </label> -->
-                <input id="user-login-email" type="text" placeholder="info@liist.me" required>
-                <br>
-                <button id="user-login-submit" class="nav-button" type="submit">Get Started</button>
-            </fieldset>
-        </form>
-    </div>
+    <!-- jQuery Flip Card -->
+    <div id="card">
 
-    <!-- main data container for dynamic HTML -->
-    <main role="main" id="data"></main>
+        <div class="front">
+
+            <!-- landing 'page' -->
+            <div id="landing-container" class="container">
+                <p id="landing-text">liist.me lets you store playliists of music for safe keeping & reference. Check out a sneek peak of coming features in the top left & enjoy!</p>
+                <div aria-hidden="true" class="customHr">.</div>
+                <form id="get-started-form" action="#">
+                    <fieldset>
+                        <legend>Enter your email address to get started.</legend>
+                        <!-- <label for="user-login-email">Email: </label> -->
+                        <input id="user-login-email" type="text" placeholder="info@liist.me" required>
+                        <br>
+                        <button id="user-login-submit" class="nav-button" type="submit">Get Started</button>
+                    </fieldset>
+                </form>
+            </div>
+
+            <!-- main data container for dynamic app HTML -->
+            <main role="main" id="data"></main>
+
+        </div>
+
+        <!-- Features card -->
+        <div class="back">
+
+            <!-- features list -->
+            <div id="features-container" class="container">
+                <p id="features-description">These features are in the works. Be sure to check back frequently as the app evolves and please share feedback through the links at the bottom! <i class="fas fa-smile-beam"></i></p>
+                <div aria-hidden="true" class="customHr">.</div>
+                <ul id="features-list">
+                    <li>Feature 1</li>
+                    <li>Feature 2</li>
+                    <li>Feature 3</li>
+                    <li>Feature 4</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
     <!-- footer -->
     <footer role="contentinfo">
-        <span id="footer-text">Created by Jaiwoo <a href="mailto:info@jaiwoo.me"><i id="mail-btn" class="fas fa-envelope"></i></a></span>
-        <!-- <button id="theme-btn" class="nav-button"><i class="fas fa-lightbulb"></i></button> -->
+        <span id="footer-text">Created by Jaiwoo</span>
+        <br>
+        <a href="mailto:info@jaiwoo.me" class="footer-button-container"><i id="mail-btn" class="fas fa-envelope footer-button"></i></a>
+        <a href="https://github.com/Jaiwoo/liist.me" class="footer-button-container" target="_blank"><i id="github-btn" class="fab fa-github footer-button"></i></a>
+        <a href="https://www.instagram.com/djaiwoo/" class="footer-button-container" target="_blank"><i id="instagram-btn" class="fab fa-instagram footer-button"></i></a>
     </footer>
-
 
     <!-- ──────────────────────────────────────────────────────────────────────────────── -->
 
     <!-- jQuery CDN -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
+    
     <!-- main client JS -->
     <script src="/index.js"></script>
 

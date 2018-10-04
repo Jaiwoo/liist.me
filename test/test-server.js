@@ -254,12 +254,48 @@ describe('Liists API resource', function() {
   });
 
   // PUT TO /LIISTS/:ID
-  describe('PUT to /liist/:id', function() {
+  describe('PUT to /liists/:id', function() {
+    it('should update liist info by ID', function() {
+      let liistId;
+      let userId;
+      let updatedInfo;
+
+      return Liist
+        .findOne()
+        .then(function(liist) {
+          liistId = liist.id;
+          userId = liist.owner._id;
+          updatedInfo = {
+            name: faker.lorem.words(),
+            description: faker.lorem.sentence()
+          };
+          return chai
+            .request(app)
+            .put(`/liists/${liistId}`)
+            .set('Cookie', `userID=${userId}`)
+            .send(updatedInfo);
+        })
+        // inspect response
+        .then(function(res) {
+          expect(res).to.have.status(201);
+
+          return Liist.findById(liistId);
+        })
+        // inspect if db was updated properly
+        .then(function(liist) {
+          expect(liist.name).to.equal(updatedInfo.name);
+          expect(liist.description).to.equal(updatedInfo.description);
+        });
+    });
+  });
+
+  // POST TO /LIISTS/:ID/songs
+  describe('POST to /liist/:id', function() {
     it('should add song to liist by ID', function() {
       let liistId;
       let userId;
       let songObj;
-      // get random liist from db then PUT to its ID
+      // get random liist from db then POST to its ID
       return Liist
         .findOne()
         .then(function(liist) {
@@ -272,7 +308,7 @@ describe('Liists API resource', function() {
           };
           return chai
             .request(app)
-            .put(`/liists/${liistId}/songs`)
+            .post(`/liists/${liistId}/songs`)
             .set('Cookie', `userID=${userId}`)
             .send(songObj);
         })
