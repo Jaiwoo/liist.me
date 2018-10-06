@@ -6,7 +6,39 @@
 
 ## Features
 
-- The app
+- The app allows users to give each liist a unique name & description and tracks can be added or removed at any time
+- Users can choose between a simple light or dark theme at any time in the top right
+- A reference of upcoming features and app development is availble in the top left
+
+---
+
+## Screenshots
+
+Landing Page:
+
+![landing page](/img/landing_page.png)
+
+Liist Page:
+
+![liist page](/img/liist_page-light.png)
+
+Dark Mode:
+
+![dark mode](/img/liist_page-dark.png)
+
+Features Page:
+
+![features page](/img/features_page.png)
+
+---
+
+## API
+
+> the API sends & receives JSON data and most HTML is dynamically generated in the client.
+
+- /liists endpoint for GET, POST operations of liists
+- /liists/:id endpoint for PUT, DELETE operations
+- /users endpoint for GET, POST operations of users
 
 ---
 
@@ -25,12 +57,28 @@
 - [ESLint](https://eslint.org/), [Mocha](https://mochajs.org/) & [Chai](https://www.chaijs.com/) for linting, unit & integration testing
 - [Travis CI](https://travis-ci.org/), [Heroku](https://www.heroku.com/home) & [mLab](https://mlab.com/) for deployment
 
-## Project Roadmap
-
 ---
+
+## Project Roadmap
 
 > Here's a peek at features that are in the works to be added to the app as it evolves.
 
-#### User Authentication 
+### User Authentication & Experience
 
-- 
+- modern authentication with [JWTs](https://jwt.io/) & [Passport](http://www.passportjs.org/)
+- private & public liists
+- ability to share link to public, read-only liist for non-authenticated users
+- collaborative liists
+- commenting system
+
+### External APIs
+
+- [Apple Music](https://developer.apple.com/documentation/applemusicapi?changes=_9) & [Spotify](https://developer.spotify.com/documentation/web-api/) integrations
+  - login, playback, search & metadata
+- [bit.ly](https://bitly.com/) url shortening for sharing
+
+---
+
+## Created By Jaiwoo
+
+## feedback? - info@jaiwoo.me
