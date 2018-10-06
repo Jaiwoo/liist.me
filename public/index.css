@@ -1,7 +1,8 @@
 /*
  * ─── MAIN CLIENT STYLES ─────────────────────────────────────────────────────────
  */
-html {
+
+ html {
   height: 100%;
   box-sizing: border-box;
 }
@@ -13,10 +14,18 @@ html {
 }
 
 body {
-  position: relative;
-  margin: 0;
-  min-height: 100%;
-  padding-bottom: 3rem;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main, #flex-filler {
+  flex: 1;
+}
+
+footer {
+  padding: 1rem;
+  text-align: center;
 }
 
 .container {
@@ -26,16 +35,6 @@ body {
   text-align: center;
   font-size: 13pt;
   border-radius: 4px;
-}
-
-footer {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: .5rem;
-  font-size: 14pt;
-  text-align: center;
 }
 
 .footer-button-container {
@@ -165,6 +164,10 @@ fieldset {
 .form-submit {
   margin-top: 10px;
   border-radius: 4px;
+}
+
+#edit-liist-cancel {
+  margin-bottom: .5rem;
 }
 
 #get-started-form input {

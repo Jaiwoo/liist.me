@@ -47,7 +47,7 @@ Features Page:
 ### Client
 
 - HTML5, CSS, JavaScript ES6
-- [jQuery](https://jquery.com/) for DOM manipulation, animation, event listening & AJAX
+- [jQuery](https://jquery.com/) for DOM manipulation, event listening & AJAX
 - [Google Fonts](https://fonts.google.com/) & [Font Awesome](https://fontawesome.com/) for styling
 
 ### Server
@@ -68,6 +68,7 @@ Features Page:
 - modern authentication with [JWTs](https://jwt.io/) & [Passport](http://www.passportjs.org/)
 - private & public liists
 - ability to share link to public, read-only liist for non-authenticated users
+- ability to sort & re-order liists
 - collaborative liists
 - commenting system
 

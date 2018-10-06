@@ -11,15 +11,36 @@ function setStateAndRender(newState) {
 }
 
 function render(state) {
+
   // render liists page
   if (state.page === 'liists') {
     const liistsTableHtml = generateLiistsTable(state.liists);
     $('#data').html(liistsTableHtml);
+    $('#liists-table').DataTable({
+      rowReorder: {
+        enable: true,
+        dataSrc: 'track'
+      },
+      searching: false,
+      lengthChange: false,
+      paging: false,
+      info: false
+    });
   } 
   // render current liist page
   else if (state.page === 'currentLiist') {
     const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
     $('#data').html(liistTableHtml);
+    $('#current-liist-table').DataTable({
+      rowReorder: {
+        enable: true,
+        dataSrc: 'track'
+      },
+      searching: false,
+      lengthChange: false,
+      paging: false,
+      info: false
+    });
     // add-song click handler
     $('#add-song-btn').on('click', function() {
       const addSongFormHTML = generateAddSongForm(state.currentLiist);
@@ -229,7 +250,7 @@ function generateLiistsTable(data) {
       <button id="create-btn" class="nav-button">Create a liist</button>
     </nav>
     <div id="liists-container" class="container">
-      <table id="liists-table">
+      <table id="liists-table" class="display">
         <thead>
           <tr>
             <th style="width: 30%">liist name</th>
@@ -279,7 +300,7 @@ function generateCurrentLiistTable(liist) {
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
         <button id="edit-liist-btn" class="liist-button">Edit Liist</button>
-        <table id="current-liist-table">
+        <table id="current-liist-table" class="display">
           <thead>
             <tr>
               <th style="width: 32%">track</th>
@@ -397,9 +418,10 @@ function generateEditLiistForm(liist) {
         <br>
         <textarea id="edit-liist-description" type="text" rows="6" required></textarea>
         <br>
-        <input id="edit-liist-submit" class="form-submit" type="submit" value="Edit Liist">
+        <input id="edit-liist-submit" class="form-submit" type="submit" value="Submit Changes">
       </fieldset>
     </form>
+    <button id="edit-liist-cancel" class="form-submit cancel-btn">Cancel</button>
   </div>
   `;
 
@@ -495,9 +517,14 @@ $('body').on('click', '#create-btn', function() {
   setStateAndRender({ page: 'create-liist' });
 });
 
-// HOME BUTTON
+// BANNER BUTTON
 $('#banner-text').on('click', function() {
+  $('body').removeClass('logged-in');
+  $('#features-container').hide();
+  $('#flex-filler').hide();
+  $('#features-btn').show();
   $('#landing-container').show();
+  $('#data').show();
   $('#data').empty();
 });
 
@@ -505,8 +532,9 @@ $('#banner-text').on('click', function() {
 $('#get-started-form').on('submit', function(e) {
   e.preventDefault();
   $('#landing-container').hide();
+  $('body').addClass('logged-in');
   const userEmail = $('#user-login-email').val();
-  getUser(userEmail, function() {
+  getUser(userEmail.toLowerCase(), function() {
     getUserLiists(processLiistsData);
   });
 });
@@ -514,6 +542,10 @@ $('#get-started-form').on('submit', function(e) {
 // LIISTS ROW CLICK HANDLERS
 $('body').on('click touchstart', '#liists-table .liists-table-row', function() {
   getLiistByID($(this).attr('id'), renderCurrentLiist);
+});
+
+$('body').on('click', '#edit-liist-cancel' , function() {
+  renderCurrentLiist(STATE.currentLiist);
 });
 
 // THEME TOGGLE
@@ -530,10 +562,14 @@ $('#theme-btn').on('click', function() {
 
 // FEATURES TOGGLE
 
-$('#card').flip({
-  trigger: 'manual'
-});
-
 $('#features-btn').on('click', function() {
-  $('#card').flip('toggle');
+  if($('body').hasClass('logged-in')) {
+    $('#data').toggle();
+    $('#flex-filler').toggle();
+    $('#features-container').toggle();
+  }
+  else {
+    $('#landing-container').toggle();
+    $('#features-container').toggle();
+  }
 });
