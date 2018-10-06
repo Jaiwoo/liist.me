@@ -391,11 +391,11 @@ function generateEditLiistForm(liist) {
         <div aria-hidden="true" class="customHr">.</div>
         <label for="edit-liist-name">Liist Name:</label>
         <br>
-        <input id="edit-liist-name" type="text">
+        <input id="edit-liist-name" type="text" required>
         <br>
         <label for="edit-liist-description">Description:</label>
         <br>
-        <textarea id="edit-liist-description" type="text" rows="6"></textarea>
+        <textarea id="edit-liist-description" type="text" rows="6" required></textarea>
         <br>
         <input id="edit-liist-submit" class="form-submit" type="submit" value="Edit Liist">
       </fieldset>
