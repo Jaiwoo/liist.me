@@ -1,4 +1,4 @@
-# [LIIST.ME](https://stark-eyrie-84041.herokuapp.com)
+# [LIIST.ME](https://liist.me/)
 
 > liist.me lets you store playliists of music for safe keeping & reference.
 
