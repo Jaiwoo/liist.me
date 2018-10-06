@@ -325,6 +325,10 @@ fieldset {
     max-width: 60vw;
   }
 
+  .features-description {
+    font-size: 20pt;
+  }
+
   #liists-table .liists-table-row:hover {
     background-color: orange;
     cursor: pointer;
