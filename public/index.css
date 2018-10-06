@@ -99,6 +99,10 @@ footer {
   font-size: 16pt;
 }
 
+.features-description {
+  font-size: 16pt;
+}
+
 #nav-container {
   width: 90vw;
   width: 90%;
@@ -190,16 +194,16 @@ fieldset {
   margin-bottom: 10px;
 }
 
-#features-container {
-  font-size: 16pt;
-}
-
 #features-list {
-  /* list-style-type: none; */
+  font-size: 14pt;
   text-align: left;
   width: 80%;
   margin: 0 auto;
   padding: 0;
+}
+
+.features-description {
+  font-size: 14pt;
 }
 
 .features-link {

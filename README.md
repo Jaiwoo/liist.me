@@ -7,8 +7,8 @@
 ## Features
 
 - The app allows users to give each liist a unique name & description and tracks can be added or removed at any time
-- Users can choose between a simple light or dark theme at any time in the top right
-- A reference of upcoming features and app development is availble in the top left
+- Users can choose between a simple light or dark theme at any time
+- A reference of upcoming features and app development is available
 
 ---
 
