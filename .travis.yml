@@ -6,6 +6,6 @@ deploy:
   provider: heroku
   api_key:
     secure: LjeXolZ+oOwsphwQBe7AcYwuuLSZKAWmMRvOPZ3++0wrHgN1wWr2sCDfCgdmuEP77AQXuaoNiegTHoBMxB7H9Mxg7XtXxO+YeazPvbx6eSOOpwlhP8ENMBRlJQyoXg/KXKG5hJIDlAomsk9wxHvpSqhIihmGOsa3AtMMMA37W9zI10x1wTypU4czTzr0GXlF1e2uRs7Tgd3+Fyj2pfYUcAxwhb5OsRORMXZpDLuZUq/2dsUjC6X3G+ZZ0VSJG3IIU/dDIc7oTHoGMDrI/w43C0Ff3bIiwUYNjlDaNpkdyqb8XT5YcWfTKTmHvdwcICCBk7DEHRFCV0fokAKwyZRk27h3rpMveY64C4i6Lgki+qua+khmSaSZZaghUrFxI3XXNPsYlO1ObWxG8yBafPW4g2aU94cFhfqYx7tEq6T0b5QSIKj3PWgrioJVTuq/MIFhlO5XJ0+7RuMO9Z6KySk9L0GK4FSpalkqnwS3R8gcxNv7JVxodyTaba2fd6/gJxcYPDLfGrAzWMvlmc0yYQMpTbwoI1AyBVVOq/4hfhrx6KDf6LGsBBlUaKGD/ihwcWxKNb0GINIhDOAcprIiQ/yZWozhuN7SJmSpSbxW0VgxXug7HNVuC2nfx/ur//X9KHg2wPIYIpVzwAV7/R4ZVoXCXllMVZ2gaWo8wxscvZ6JBi0=
-  app: stark-eyrie-84041
+  app: liist-me
   on:
     repo: Jaiwoo/liist.me
