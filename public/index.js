@@ -16,31 +16,11 @@ function render(state) {
   if (state.page === 'liists') {
     const liistsTableHtml = generateLiistsTable(state.liists);
     $('#data').html(liistsTableHtml);
-    $('#liists-table').DataTable({
-      rowReorder: {
-        enable: true,
-        dataSrc: 'track'
-      },
-      searching: false,
-      lengthChange: false,
-      paging: false,
-      info: false
-    });
   } 
   // render current liist page
   else if (state.page === 'currentLiist') {
     const liistTableHtml = generateCurrentLiistTable(state.currentLiist);
     $('#data').html(liistTableHtml);
-    $('#current-liist-table').DataTable({
-      rowReorder: {
-        enable: true,
-        dataSrc: 'track'
-      },
-      searching: false,
-      lengthChange: false,
-      paging: false,
-      info: false
-    });
     // add-song click handler
     $('#add-song-btn').on('click', function() {
       const addSongFormHTML = generateAddSongForm(state.currentLiist);
@@ -51,7 +31,7 @@ function render(state) {
     $('#edit-liist-btn').on('click', function() {
       const editLiistFormHTML = generateEditLiistForm(state.currentLiist);
       $('#data').html(editLiistFormHTML);
-      handleEditLiistSubmit(STATE.currentLiistID);
+      handleEditLiistSubmit();
     });
 
     // delete liist click handler
@@ -66,11 +46,19 @@ function render(state) {
     // delete song click handler
     $('#current-liist-table .song-delete-btn').click(function() {
       let songID = $(this).parent().attr('id');
-      let songToDelete = getSongNameToDelete(songID);
-      let del = confirm(`Are you sure you want to delete the song ${songToDelete} from the liist?`);
+      let songToDelete = getSong(songID);
+      let del = confirm(`Are you sure you want to delete the song ${songToDelete.title} from the liist?`);
       if (del) {
         deleteSongInCurrentLiist(songID, renderCurrentLiist);
       }
+    });
+    // edit song click handler
+    $('#current-liist-table .song-edit-btn').click(function() {
+      let songID = $(this).parent().attr('id');
+      let songToEdit = getSong(songID);
+      const editSongFormHTML = generateEditSongForm(songToEdit);
+      $('#data').html(editSongFormHTML);
+      handleEditSongSubmit(songID);
     });
   }
   // render create-liist page
@@ -142,7 +130,7 @@ function editCurrentLiist(userInput, callback) {
   $.ajax(settings);
 }
 
-// POST to /liists:ID/songs (ADD SONG TO CURRENT LIIST)
+// POST to /liists/:ID/songs (ADD SONG TO CURRENT LIIST)
 function addSongToLiist(songToAdd, callback) {
   const settings = {
     url: API_LIISTS_URL + `/${STATE.currentLiistID}/songs`,
@@ -178,6 +166,19 @@ function deleteCurrentLiist(callback) {
     success: callback
   };
   
+  $.ajax(settings);
+}
+// PUT to /liists/:id/songs (edit song in current liist)
+function editSongInCurrentLiist(userInput, callback) {
+  const settings = {
+    url: API_LIISTS_URL + `/${STATE.currentLiistID}/songs`,
+    data: JSON.stringify(userInput),
+    contentType: 'application/json',
+    datatype: 'json',
+    type: 'PUT',
+    success: callback
+  };
+
   $.ajax(settings);
 }
 
@@ -250,12 +251,12 @@ function generateLiistsTable(data) {
       <button id="create-btn" class="nav-button">Create a liist</button>
     </nav>
     <div id="liists-container" class="container">
-      <table id="liists-table" class="display">
+      <table aria-label="a table of your saved lists" id="liists-table" class="display">
         <thead>
           <tr>
             <th style="width: 30%">liist name</th>
             <th style="width: 60%">description</th>
-            <th style="width: 10%"><i class="fas fa-music"></i>'s</th>
+            <th style="width: 10%">songs</th>
           </tr>
         </thead>
         <tbody id="liists-table-body">
@@ -279,7 +280,8 @@ function generateCurrentLiistTable(liist) {
         `<tr id="${liist.songs[index]._id}" class="current-liist-table-row">
           <td class="song-title">${liist.songs[index].title}</td>
           <td class="song-artist">${liist.songs[index].artist}</td>
-          <td class="song-delete-btn"><i class="fas fa-minus-circle"></i></td>
+          <td aria-label="edit info for the song ${liist.songs[index].title}" class="song-edit-btn liist-row-btn"><i class="fas fa-edit"></i></td>
+          <td aria-label="delete the song ${liist.songs[index].title} from the liist" class="song-delete-btn liist-row-btn"><i class="fas fa-minus-circle"></i></td>
         </tr>`
       );
     }
@@ -288,8 +290,8 @@ function generateCurrentLiistTable(liist) {
   
     const liistTable = `
       <nav id="nav-container">
-        <button id="get-liists-btn" class="nav-button">Get liists</button>
-        <button id="create-btn" class="nav-button">Create a liist</button>
+        <button aria-label="click to get your saved lists" id="get-liists-btn" class="nav-button">Get liists</button>
+        <button aria-label="click to create a new list" id="create-btn" class="nav-button">Create a liist</button>
       </nav>
       <div id="liist-container" class="container">
         <div id="liist-container-info" class="container-info">
@@ -300,12 +302,13 @@ function generateCurrentLiistTable(liist) {
         <button id="add-song-btn" class="liist-button">Add Song</button>
         <button id="delete-liist-btn" class="liist-button">Delete Liist</button>
         <button id="edit-liist-btn" class="liist-button">Edit Liist</button>
-        <table id="current-liist-table" class="display">
+        <table aria-label="a table of songs from list ${liist.name}" id="current-liist-table" class="display">
           <thead>
             <tr>
               <th style="width: 32%">track</th>
               <th style="width: 32%">artist</th>
-              <th style="width: 5%"><i class="fas fa-trash"></i></th>
+              <th style="width: 2%"></th>
+              <th style="width: 2%"></th>
             </tr>
           </thead>
           <tbody id="current-liist-table-body">
@@ -339,12 +342,12 @@ function generateCurrentLiistTable(liist) {
 
 }
 
-function getSongNameToDelete(ID) {
+function getSong(ID) {
   const songIndex = STATE.currentLiist.songs.findIndex(function(element) {
     return element._id == ID;
   });
 
-  return STATE.currentLiist.songs[songIndex].title;
+  return STATE.currentLiist.songs[songIndex];
 }
 
 //
@@ -365,15 +368,16 @@ function generateAddSongForm(liist) {
           <div aria-hidden="true" class="customHr">.</div>
           <label for="add-song-name">Song Name:</label>
           <br>
-          <input id="add-song-name" type="text">
+          <input id="add-song-name" type="text" placeholder="The Greatest Song Ever">
           <br>
           <label for="add-song-artist">Artist:</label>
           <br>
-          <input id="add-song-artist" type="text">
+          <input id="add-song-artist" type="text" placeholder="Best Artist of All Time">
           <br>
           <input id="add-song-submit" class="form-submit" type="submit" value="Add Song">
         </fieldset>
       </form>
+      <button id="add-song-cancel" class="form-submit cancel-btn">Cancel</button>
     </div>
   `;
 
@@ -395,6 +399,55 @@ function handleAddSongSubmit() {
 }
 
 //
+// ─── EDIT SONG HTML ─────────────────────────────────────────────────────────────
+//
+
+function generateEditSongForm(song) {
+  const editSongHTML = `
+    <nav id="nav-container">
+      <button id="get-liists-btn" class="nav-button">Get liists</button>
+      <button id="create-btn" class="nav-button">Create a liist</button>
+    </nav>
+    <div id="edit-liist-container" class="container">
+      <form id="edit-song-form" role="form" action="#">
+        <fieldset>
+          <legend>Edit song info.</legend>
+          <br>
+          <div aria-hidden="true" class="customHr">.</div>
+          <label for="edit-song-title">Song Title:</label>
+          <br>
+          <input id="edit-song-title" type="text" value="${song.title}" required>
+          <br>
+          <label for="edit-song-artist">Artist:</label>
+          <br>
+          <input id="edit-song-artist" type="text" value="${song.artist}" required>
+          <br>
+          <input id="edit-song-submit" class="form-submit" type="submit" value="Submit Changes">
+        </fieldset>
+      </form>
+      <button id="edit-song-cancel" class="form-submit cancel-btn">Cancel</button>
+    </div>
+  `;
+
+  return editSongHTML;
+}
+
+function handleEditSongSubmit(songID) {
+  $('#edit-song-form').on('submit', function(e) {
+    e.preventDefault();
+    
+    const userInput = {
+      songID: songID,
+      title: $('#edit-song-title').val(),
+      artist: $('#edit-song-artist').val()
+    };
+
+    editSongInCurrentLiist(userInput, renderCurrentLiist);
+  });
+}
+
+
+//
 // ─── EDIT LIIST HTML ────────────────────────────────────────────────────────────
 //
 
@@ -412,11 +465,11 @@ function generateEditLiistForm(liist) {
         <div aria-hidden="true" class="customHr">.</div>
         <label for="edit-liist-name">Liist Name:</label>
         <br>
-        <input id="edit-liist-name" type="text" required>
+        <input id="edit-liist-name" type="text" value="${liist.name}" required>
         <br>
         <label for="edit-liist-description">Description:</label>
         <br>
-        <textarea id="edit-liist-description" type="text" rows="6" required></textarea>
+        <textarea id="edit-liist-description" type="text" rows="6" required>${liist.description}</textarea>
         <br>
         <input id="edit-liist-submit" class="form-submit" type="submit" value="Submit Changes">
       </fieldset>
@@ -544,7 +597,8 @@ $('body').on('click touchstart', '#liists-table .liists-table-row', function() {
   getLiistByID($(this).attr('id'), renderCurrentLiist);
 });
 
-$('body').on('click', '#edit-liist-cancel' , function() {
+// CANCEL BUTTON CLICK HANDLERS
+$('body').on('click', '.cancel-btn' , function() {
   renderCurrentLiist(STATE.currentLiist);
 });
 

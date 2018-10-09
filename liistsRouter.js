@@ -114,6 +114,34 @@ router.post('/:id/songs', jsonParser, (req, res) => {
     });
 });
 
+// PUT /LIISTS/:ID/SONGS (EDIT SONG IN LIIST BY ID)
+router.put('/:id/songs', jsonParser, (req, res) => {
+  const requiredFields = ['songID', 'title', 'artist'];
+  for (let i=0; i< requiredFields.length; i++) {
+    const field = requiredFields[i];
+    if (!(field in req.body)) {
+      const message = `Request body is missing ${field} field`;
+      console.error(message);
+      return res.status(400).send(message);
+    }
+  }
+  let songToEdit = {
+    songID: req.body.songID,
+    editedBy: req.cookies.userID,
+    title: req.body.title,
+    artist: req.body.artist};
+
+  // edit song in db
+  Liist
+    .findOneAndUpdate({'_id': req.params.id, 'songs._id': songToEdit.songID},
+      { '$set': { 'songs.$.title': songToEdit.title, 'songs.$.artist': songToEdit.artist }}, { 'new': true})
+    .then(liist => res.status(201).json(liist.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Internal server error'});
+    });
+});
+
 // DELETE /LIISTS/:ID/SONGS (DELETE SONG FROM LIIST BY ID)
 router.delete('/:id/songs', jsonParser, (req, res) => {
   const requiredFields = ['songID'];

@@ -173,7 +173,7 @@ describe('Liists API resource', function() {
     });
   });
 
-  // GET TO /LIISTS/:ID
+  // GET TO /LIISTS/:ID (GET LIIST BY ID)
   describe('GET to /liists/:ID', function() {
     it('should return liist that matches specified ID', function() {
       let res;
@@ -213,7 +213,7 @@ describe('Liists API resource', function() {
     });
   });
 
-  // POST TO /LIISTS
+  // POST TO /LIISTS (ADD NEW LIIST)
   describe('POST to /liists', function() {
     it('should add new liist to db & return serialized version', function() {
       // GET USER THEN POST NEW LIIST
@@ -253,7 +253,7 @@ describe('Liists API resource', function() {
     });
   });
 
-  // PUT TO /LIISTS/:ID
+  // PUT TO /LIISTS/:ID (UPDATE LIIST INFO)
   describe('PUT to /liists/:id', function() {
     it('should update liist info by ID', function() {
       let liistId;
@@ -289,7 +289,7 @@ describe('Liists API resource', function() {
     });
   });
 
-  // POST TO /LIISTS/:ID/songs
+  // POST TO /LIISTS/:ID/songs (ADD NEW SONG)
   describe('POST to /liist/:id', function() {
     it('should add song to liist by ID', function() {
       let liistId;
@@ -328,7 +328,50 @@ describe('Liists API resource', function() {
     });
   });
 
-  // DELETE TO /LIISTS/:ID/SONGS
+  describe('PUT to /liists/:id/songs to updated song info', function() {
+    it('should update specific song info by ID', function() {
+      // first get a liist item from db for testing
+      let liist;
+      let songID;
+      let userID;
+      let songToUpdate;
+
+      return Liist
+        .findOne()
+        .then(function(_liist) {
+          liist = _liist;
+          songID = liist.songs[0].id;
+          userID = liist.owner._id;
+
+          songToUpdate = {
+            songID: songID,
+            title: faker.lorem.words(),
+            artist: faker.name.findName(),
+          };
+
+          return chai
+            .request(app)
+            .put(`/liists/${liist.id}/songs`)
+            .set('Cookie', `userID=${userID}`)
+            .send(songToUpdate);
+        })
+        // inspect response and return call to db to ensure song updated
+        .then(function(res) {
+          expect(res).to.have.status(201);
+          return Liist.findById(liist.id);
+        })
+        // check db for song update
+        .then(function(_liist) {
+          const songIndex = _liist.songs.findIndex(function(element) {
+            return element.id == songID;
+          });
+          expect(_liist.songs[songIndex].title).to.equal(songToUpdate.title);
+          expect(_liist.songs[songIndex].artist).to.equal(songToUpdate.artist);
+        });
+    });
+  });
+
+  // DELETE TO /LIISTS/:ID/SONGS (DELETE SONG BY ID)
   describe('DELETE to /liists/:id to delete song from liist', function() {
     it('should delete specific song from liist & db by ID in body', function() {
       // first get a liist item from db for testing
@@ -368,7 +411,7 @@ describe('Liists API resource', function() {
     });
   });
 
-  // DELETE TO /LIISTS/:ID
+  // DELETE TO /LIISTS/:ID (DELETE LIIST BY ID)
   describe('DELETE to /liists/:id', function() {
     it('should delete liist from DB by ID', function() {
       let liist;

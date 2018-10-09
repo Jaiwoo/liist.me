@@ -143,7 +143,7 @@ td {
   padding: 4px;
 }
 
-.song-delete-btn {
+.liist-row-btn {
   text-align: center;
 }
 
@@ -170,7 +170,7 @@ fieldset {
   border-radius: 4px;
 }
 
-#edit-liist-cancel {
+.cancel-btn {
   margin-bottom: .5rem;
 }
 
@@ -203,7 +203,7 @@ fieldset {
 }
 
 .features-description {
-  font-size: 14pt;
+  font-size: 13pt;
 }
 
 .features-link {
@@ -338,7 +338,7 @@ fieldset {
     background-color: orange;
   }
 
-  #current-liist-table .song-delete-btn:hover {
+  #current-liist-table .liist-row-btn:hover {
     color: red;
     cursor: pointer
   }
