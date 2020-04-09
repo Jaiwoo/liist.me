@@ -13,7 +13,8 @@
     <link href="https://fonts.googleapis.com/css?family=Monoton|Montserrat|Roboto" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+        integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
 
 
@@ -26,30 +27,33 @@
 
 <body class="t--light">
 
-    <!-- header -->
-    <header role="banner" class="banner">
-        <h1 id="banner-text">LIIST.ME </h1>
-        <i id="theme-btn" class="fas fa-lightbulb"></i>
-        <i id="features-btn" class="fas fa-clipboard-list"></i>
-    </header>
+    <div id='app-wrapper'>
+        <!-- header -->
+        <header role="banner" class="banner">
+            <h1 id="banner-text">LIIST.ME </h1>
+            <i id="theme-btn" class="fas fa-lightbulb"></i>
+            <i id="features-btn" class="fas fa-clipboard-list"></i>
+        </header>
 
-    <!-- landing 'page' -->
-    <div id="landing-container" class="container">
-        <p id="landing-text">liist.me lets you store playliists of music for safe keeping & reference. Check out a sneek peak of coming features in the top left & enjoy!</p>
-        <div aria-hidden="true" class="customHr">.</div>
-        <form role="form" id="get-started-form" action="#">
-            <fieldset>
-                <legend>Enter your email address to get started or see your already saved liists.</legend>
-                <!-- <label for="user-login-email">Email: </label> -->
-                <input aria-label="enter your email address to get started" id="user-login-email" type="text" placeholder="info@liist.me" required>
-                <br>
-                <button id="user-login-submit" class="nav-button" type="submit">Get Started</button>
-            </fieldset>
-        </form>
-    </div>
+        <!-- landing 'page' -->
+        <div id="landing-container" class="container">
+            <p id="landing-text">liist.me lets you store playliists of music for safe keeping & reference. Check out a
+                sneek peak of coming features in the top left & enjoy!</p>
+            <div aria-hidden="true" class="customHr">.</div>
+            <form role="form" id="get-started-form" action="#">
+                <fieldset>
+                    <legend>Enter your email address to get started or see your already saved liists.</legend>
+                    <!-- <label for="user-login-email">Email: </label> -->
+                    <input aria-label="enter your email address to get started" id="user-login-email" type="text"
+                        placeholder="info@liist.me" required>
+                    <br>
+                    <button id="user-login-submit" class="nav-button" type="submit">Get Started</button>
+                </fieldset>
+            </form>
+        </div>
 
-    <!-- features list -->
-    <div id="features-container" class="container" style="display:none">
+        <!-- features list -->
+        <div id="features-container" class="container" style="display:none">
             <h2 class="features-description">These features are in the works.</h2>
             <div aria-hidden="true" class="customHr">.</div>
             <ul id="features-list">
@@ -59,38 +63,48 @@
                 <li>ability to collaborate on liists with other users</li>
                 <li>commenting system</li>
                 <li>sort & re-order liists</li>
-                <li><a class="features-link" href="https://www.apple.com/music/" target="_blank">Apple Music</a> & <a class="features-link" href="https://www.spotify.com/us/" target="_blank">Spotify</a> integrations for search & playback</li>
+                <li><a class="features-link" href="https://www.apple.com/music/" target="_blank">Apple Music</a> & <a
+                        class="features-link" href="https://www.spotify.com/us/" target="_blank">Spotify</a>
+                    integrations for search & playback</li>
             </ul>
             <br>
             <div aria-hidden="true" class="customHr">.</div>
-            <p class="features-description">Be sure to check back frequently as the app evolves and please share feedback through the links at the bottom! <i class="fas fa-smile-beam"></i></p>
+            <p class="features-description">Be sure to check back frequently as the app evolves and please share
+                feedback through the links at the bottom! <i class="fas fa-smile-beam"></i></p>
+        </div>
+
+        <!-- main data container for dynamic app HTML -->
+        <main role="main" id="data"></main>
+
+        <!-- flex container -->
+        <div aria-hidden="true" id="flex-filler" style="display:none"></div>
+
+        <!-- footer -->
+        <footer role="contentinfo" class="footer">
+            <span id="footer-text">Created by Jaiwoo</span>
+            <br>
+            <a aria-label="email me with suggestions or feedback" href="mailto:info@jaiwoo.me"
+                class="footer-button-container"><i id="mail-btn" class="fas fa-envelope footer-button"></i></a>
+            <a aria-label="a link to this project on github" href="https://github.com/Jaiwoo/liist.me"
+                class="footer-button-container" target="_blank"><i id="github-btn"
+                    class="fab fa-github footer-button"></i></a>
+            <a aria-label="a link to my instagram page" href="https://www.instagram.com/djaiwoo/"
+                class="footer-button-container" target="_blank"><i id="instagram-btn"
+                    class="fab fa-instagram footer-button"></i></a>
+        </footer>
+
+        <!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
+        <!-- jQuery CDN -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+        <!-- main client JS -->
+        <script src="/index.js"></script>
+
+        <!-- ──────────────────────────────────────────────────────────────────────────────── -->
+
     </div>
-
-    <!-- main data container for dynamic app HTML -->
-    <main role="main" id="data"></main>
-
-    <!-- flex container -->
-    <div aria-hidden="true" id="flex-filler" style="display:none"></div>
-    
-    <!-- footer -->
-    <footer role="contentinfo" class="footer">
-        <span id="footer-text">Created by Jaiwoo</span>
-        <br>
-        <a aria-label="email me with suggestions or feedback" href="mailto:info@jaiwoo.me" class="footer-button-container"><i id="mail-btn" class="fas fa-envelope footer-button"></i></a>
-        <a aria-label="a link to this project on github" href="https://github.com/Jaiwoo/liist.me" class="footer-button-container" target="_blank"><i id="github-btn" class="fab fa-github footer-button"></i></a>
-        <a aria-label="a link to my instagram page" href="https://www.instagram.com/djaiwoo/" class="footer-button-container" target="_blank"><i id="instagram-btn" class="fab fa-instagram footer-button"></i></a>
-    </footer>
-
-    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
-
-    <!-- jQuery CDN -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
-    
-    <!-- main client JS -->
-    <script src="/index.js"></script>
-
-    <!-- ──────────────────────────────────────────────────────────────────────────────── -->
 
 </body>
 
