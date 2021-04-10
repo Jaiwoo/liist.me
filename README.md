@@ -1,4 +1,4 @@
-# [LIIST.ME](https://liist.me/)
+# [LIIST.ME]
 
 > liist.me lets you store playliists of music for safe keeping & reference.
 
